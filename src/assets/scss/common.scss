@@ -1,0 +1,133 @@
+$c333: #333;
+$mainColor: #ff9933;
+$c666: #666;
+$c999: #999;
+.pull-right {
+  float: right;
+}
+
+.pull-left {
+  float: left;
+}
+
+.clearfix:after {
+  display: block;
+  clear: both;
+  content: "";
+  visibility: hidden;
+  height: 0;
+}
+.clearfix {
+  zoom: 1;
+}
+.c333 {
+  color: #333;
+}
+.c666 {
+  color: #666;
+}
+.c999 {
+  color: #999;
+}
+.f14 {
+  font-size: 14px;
+}
+.f13 {
+  font-size: 13px;
+}
+.strong {
+  font-weight: bold;
+}
+.el-submenu [class^="el-icon-"] {
+  margin-right: 6px;
+}
+.separator {
+  margin-bottom: 30px;
+}
+.img-responsive {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+}
+.center-block {
+  display: block;
+  margin-right: auto;
+  margin-left: auto;
+}
+.box-sizing {
+  width: 100%;
+  box-sizing: border-box;
+}
+.page-block {
+  margin-top: 10px;
+}
+body .el-table th.gutter {
+  display: table-cell !important;
+}
+
+body .el-table colgroup.gutter {
+  display: table-cell !important;
+}
+.routerbox{
+  padding: 0 20px 20px;
+  background: #fff;
+  border: 1px solid #eeeeee;
+  h1{
+    height: 0.625rem;
+    line-height: 0.625rem;
+    border-bottom: 1px solid #eeeeee;
+    margin-bottom: 19px;
+  }
+}
+.el-dialog__header {
+  border-bottom: 1px solid rgb(243, 243, 243);
+  padding: 14px;
+  padding-left: 20px;
+}
+.el-dialog__headerbtn {
+  top: 16px;
+  right: 12px;
+}
+.el-dialog__footer{
+  border-top: 1px solid rgb(243, 243, 243);
+  padding: 10px 20px;
+}
+.el-menu-item i{
+  width: 0.46rem;
+  text-align: center;
+  margin-right: 0;
+}
+.el-button--success{
+  background-color: #1eb99e;
+  border-color: #1eb99e;
+}
+.el-input-number{
+  width: 1.8rem;
+}
+.el-date-editor--time-select{
+  width: 2rem !important;
+}
+.el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev, .el-pagination.is-background .el-pager li {
+  border: 1px solid #eeeeee;
+  background-color: #fff;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  border: 1px solid #2dcdb1;
+  color: #2dcdb1;
+  background: #fff;
+}
+.el-tabs__active-bar{
+  width: 75px ;
+}
+.el-table__body tr.current-row>td{
+  background-color: #7db2db;
+}
+.el-progress-bar{
+  padding-right: 60px;
+}
+.el-progress{
+  display: flex;
+  justify-content: space-between;
+}

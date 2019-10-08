@@ -1,0 +1,23 @@
+<div class="login">
+  <img src="../../../static/images/logoname.png" alt="">
+  <div class="lgbox">
+    <h1>Welcome Back</h1>
+    <el-form ref="form" :model="form" :rules="loginRules">
+      <el-form-item prop="name">
+        <el-input v-model="form.name" :placeholder="$t('common.username')"></el-input>
+      </el-form-item>
+      <el-form-item prop="pass">
+        <el-input v-model="form.pass" type="password" :placeholder="$t('common.password')" @keyup.native="checkCapslock"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-select v-model="form.language" style="width: 100%;" @change='handleSetLanguage'>
+          <el-option label="English" value="en"></el-option>
+          <el-option label="中文" value="zh"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="success" style="width: 100%;margin-top:0.625rem;" @click="login" :loading="loading">{{$t('common.login')}}</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
+</div>
