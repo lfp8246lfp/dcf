@@ -10,19 +10,21 @@ let router = new VueRouter({
     mode: 'history'
 });
 
+let arr = ['/login', '/register1', '/register2', '/register3', '/forget1', '/forget2', '/forget3']
+
 // 路由权限控制
-router.beforeEach(async (to, from, next) => {
-    if (to.path === '/login') {
-        next();
-    } else {    
-        let token = localStorage.getItem('HTTP_ACCESS_TOKEN');
-        if (token == undefined) {
-            next('/login');
-        } else {
-            next();
-        }
-    }
-});
+// router.beforeEach(async (to, from, next) => {
+//     if (arr.includes(to.path)) {
+//         next();
+//     } else {
+//         let token = localStorage.getItem('HTTP_ACCESS_TOKEN');
+//         if (token == undefined) {
+//             next('/enter');
+//         } else {
+//             next();
+//         }
+//     }
+// });
 
 // export const constantRoutes = routes;
 

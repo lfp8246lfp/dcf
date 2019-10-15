@@ -3,9 +3,9 @@
     <el-menu
       :default-active="activeMenu"
       :unique-opened="true"
-      background-color="#fff"
+      background-color="#20252B"
       text-color="rgb(179,181,182)"
-      active-text-color="green"
+      active-text-color="#fff"
       :collapse="isCollapse"
       class="el-menu-vertical-demo"
       :router="true"
@@ -20,7 +20,7 @@
           <template slot="title">
             <i :class="item.icon"></i>
             <!-- <i><img :src="item.icon" alt=""></i> -->
-            <span>{{generateTitle(item.name)}}</span>
+            <span>{{item.name}}</span>
           </template>
 
           <!-- 二级菜单 -->
@@ -32,7 +32,7 @@
             >
               <template slot="title">
                 <i :class="itemChild.icon"></i>
-                <span>{{generateTitle(itemChild.name)}}</span>
+                <span>{{itemChild.name}}</span>
               </template>
 
               <!-- 三级菜单 -->
@@ -45,13 +45,13 @@
                 <!-- <i>
                     <img :src="itemChild.icon" alt="">
                 </i>-->
-                <span slot="title">{{generateTitle(itemChild_Child.name)}}</span>
+                <span slot="title">{{itemChild_Child.name}}</span>
               </el-menu-item>
             </el-submenu>
 
             <el-menu-item v-else :index="itemChild.path" :key="itemChild.path">
               <i :class="itemChild.icon"></i>
-              <span slot="title">{{generateTitle(itemChild.name)}}</span>
+              <span slot="title">{{itemChild.name}}</span>
             </el-menu-item>
           </template>
         </el-submenu>
@@ -59,7 +59,7 @@
         <el-menu-item v-else :index="item.path" :key="item.path">
           <i :class="item.icon"></i>
           <!-- <i><img :src="item.icon" alt=""></i> -->
-          <span slot="title">{{generateTitle(item.name)}}</span>
+          <span slot="title">{{item.name}}</span>
         </el-menu-item>
       </template>
     </el-menu>
@@ -74,7 +74,16 @@ export default {
     name: 'SideBar',
     data () {
         return {
-            list: []
+            list: [
+              {path: 'home', name: '首页'},
+              {path: 'fileManage', name: '档案管理'},
+              {path: 'incomeManage', name: '收入管理'},
+              {path: 'incomeStatistics', name: '收入统计'},
+              {path: 'energyStatistics', name: '用能统计'},
+              {path: 'billManage', name: '账单管理'},
+              {path: 'valueAddedService', name: '增值服务'},
+              {path: 'priceManage', name: '价格管理'},
+            ]
         };
     },
     props: ['isCollapse'],
@@ -86,18 +95,18 @@ export default {
             const { meta, path } = route;
             if (meta.activeMenu) {
                 return meta.activeMenu;
-            } 
+            }
             return path;
         }
     },
     mounted () {
-        this.getMenuList();
-        localStorage.setItem('menu', JSON.stringify(this.list));
+        // this.getMenuList();
     },
     methods: {
         getMenuList () {
-            this.$request('getMenuList').then(res => {
-                this.list = res.data.children;
+            this.$request('getMenuList',{params:{systemId:7}}).then(res => {
+                console.log('getMenuList', res);
+                this.list = res.data.menuInfoItems;
                 localStorage.setItem('menu', JSON.stringify(this.list));
             });
         },
@@ -119,34 +128,35 @@ export default {
   min-height: 92.5vh;
 }
 .el-aside {
-    min-height: 92.5vh;
-    border: 1px solid #eeeeee;
+  height: 100%;
+  background-color: rgb(37,42,47);
 }
 .el-menu {
   border-right: none;
 }
 .el-submenu__title {
-  background-color: #ffffff;
+  background-color: #20252B;
   color:#B4B6B7;
-  text-align: center;
+  
   i {
-    width: 0.46rem;
-    text-align: center;
-    //  margin-right: 10px;
+     margin-right: 10px;
   }
 }
 .el-menu-item {
   font-size: 14px;
+  height: 50px!important;
+  line-height: 50px!important;
+  padding-left: 14px;
   i {
-    // margin-right: 10px;
+    margin-right: 10px;
   }
 }
 .el-menu-item:hover {
-  background-color: rgb(204,204,204)!important; 
+  background-color: #0D141B!important; 
 }
 .active{
-    background:#0D141B;
-}
+     background:#0D141B;
+  }
 
 
 </style>
@@ -180,7 +190,7 @@ export default {
 }
 
 .el-menu--collapse {
-    width: 1.09rem !important;
+    width: 50px!important;
     // text-align: center;
 }
 .fa {

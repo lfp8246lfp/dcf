@@ -1,225 +1,141 @@
 <template>
   <div id="sublayout">
     <el-container>
+
       <el-header>
-        <i class="fa fa-bars toggleMemu" @click="toggleMenu" style="line-height:70px;"></i>
-        <!-- <span>沙特ami管理系统</span> -->
-        <div class="logo" style="display:inline-block;line-height:70px;margin-left:100px;">
-          <img src="../../../static/images/logo.png" alt="">
-          <span>Advanced Metering Infrastructure System</span>
+
+        <div class="logo" style="display:inline-block;">
+          <img src="../../../static/images/logoImg.png" alt="" height="40">
         </div>
+
+        <i class="fa fa-bars toggleMemu" @click="toggleMenu"></i>
         
         <div class="pull-right" style="height: 70px;">
-          <!-- <div class="search pull-left" style="height: 70px;">
-            <el-input placeholder="搜索" prefix-icon="el-icon-search" v-model="inputValue"></el-input>
-          </div> -->
+
           <div class="message pull-left" style="height: 70px;" @click="event">
             <el-badge :value="0" class="item" >
-              <i class="el-icon-message-solid"></i>
+              <img src="../../../static/images/bell.png" alt="" width="24">
             </el-badge>
           </div>
-          <!-- <lang-select class="pull-left" style="color: #b7b7b7; width: 40px; line-height: 70px; font-size: 34px;"></lang-select> -->
-          <div class="pull-left">
-            <el-select v-model="language" placeholder="选择" @change='handleSetLanguage'>
-              <el-option label="简体中文" value="zh"></el-option>
-              <el-option label="اللغة العربية" value="en"></el-option>
-            </el-select>
-          </div>
-          <div class="user_box pull-left" @click="changeIsShow">
-            <img src="" alt />
+
+          <div class="user_box pull-left">
+            <img src="../../../static/images/user.png" alt="" width="24">
             {{accountId}}
+            <i class="fa fa-caret-down" style="color:#fff"></i>
             <div class="user_manage">
-              <p @click="changePSW"><i class="el-icon-key"></i> Change Password</p>
-              <p @click="loginOut"><i class="el-icon-key"></i> Loginout</p>
+              <p @click="dialogVisible = true"><i class="el-icon-key"></i>修改密码</p>
+              <p @click="loginOut"><i class="fa fa-sign-out"></i>退出登录</p>
             </div>
           </div>
+
         </div>
+
       </el-header>
+
       <el-container>
         <side-bar :isCollapse="isCollapse"></side-bar>
-        <tree v-if="ishome"></tree>
         <el-main>
-          <!-- <bread-crumb></bread-crumb> -->
-          <tags-view></tags-view>
+          <!-- <tags-view></tags-view> -->
           <div style="padding:0.31rem 0.31rem 0;background:#f4f6fb;box-sizing:border-box;">
-            <keep-alive>
-              <router-view v-if="$route.meta.keepAlive"></router-view>
-            </keep-alive>
-            <router-view v-if="!$route.meta.keepAlive"></router-view>
+            <router-view></router-view>
             <p class="Copyright">Copyright Company © 2014-2019</p>
           </div>
         </el-main>
       </el-container>
+
+
+      <el-dialog
+        title="修改密码"
+        :visible.sync="dialogVisible"
+        width="640px">
+
+        <el-form ref="form" :model="form" label-width="190px">
+          <el-form-item label="当前密码">
+            <el-input v-model="form.pwdOld"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码">
+            <el-input v-model="form.pwdNew"></el-input>
+          </el-form-item>
+          <el-form-item label="确认新密码">
+            <el-input v-model="form.confirm"></el-input>
+          </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="changePwd">确 定</el-button>
+        </span>
+
+      </el-dialog>
+
     </el-container>
-    <el-dialog title="Real-Time Event" :visible.sync="eventDialog" width="60%" :before-close="eventClose">
-       <el-table
-        :data="tableData"
-        style="width: 100%"
-        border
-        :header-cell-style="{background:'#F2F2F2',color:'rgb(51,51,51)'}"
-      >
-        <el-table-column prop="date" label="Index"></el-table-column>
-        <el-table-column prop="name" label="Sever Type"></el-table-column>
-        <el-table-column prop="address" label="Event Class"></el-table-column>
-        <el-table-column prop="address" label="Event Name"></el-table-column>
-        <el-table-column prop="address" label="Event Time"></el-table-column>
-        <el-table-column prop="address" label="Object Type"></el-table-column>
-        <el-table-column prop="address" label="Object Name"></el-table-column>
-        <el-table-column prop="address" label="Comma Address"></el-table-column>
-        <el-table-column prop="address" label="Gis Address"></el-table-column>
-        <el-table-column prop="address" label="Content"></el-table-column>
-      </el-table>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import BreadCrumb from './BreadCrumb/BreadCrumb.vue';
 import TagsView from './TagsView/TagsView.vue';
 import SideBar from './SideBar/SideBar.vue';
-import LangSelect from './LangSelect/index.vue';
-import tree from '../common/tree'
-import { mapState } from 'vuex';
 
 export default {
     components: {
         TagsView,
-        BreadCrumb,
         SideBar,
-        LangSelect,
-        tree
     },
     data () {
         return {
-            isCollapse: true,
-            routeName: null,
-            inputValue: '',
             accountId: localStorage.getItem('accountId'),
-            changePSWParams: {
-                'password': localStorage.getItem('password')
+            dialogVisible: false,
+            form: {
+              pwdOld: '',
+              pwdNew: '',
+              confirm: '',
             },
-            language:"",
-            eventDialog:false,
-            tableData:[],
-            ishome:true
+            isCollapse: false
         };
     },
-    watch: {
-        // $route: function (newV, oldV) {
-        //     this.routeName = this.$route.path
-        //         .replace(/\//g, '-')
-        //         .match(/-(\S*)/)[1]
-        //         .match(/(\S*)-/)[1];
-        // }
-    },
-    computed: {
-        activeMenu () {
-            const route = this.$route;
-            const { meta, path } = route;
-            if (meta.activeMenu) {
-                return meta.activeMenu;
-            }
-            return path;
-        },
-        
-    },
-    mounted () {
-        // this.routeName = this.$route.path
-        //     .replace(/\//g, '-')
-        //     .match(/-(\S*)/)[1]
-        //     .match(/(\S*)-/)[1];
-        this.language=this.$store.getters.language;
-    },
+
     methods: {
         loginOut () {
             this.$confirm(
-                this.$t('areaManage.deleteTip'),
-                this.$t('areaManage.reminder'),
+                '确定要退出登录吗？',
+                '提醒',
                 {
-                    confirmButtonText: this.$t('common.yes'),
-                    cancelButtonText: this.$t('common.cancel'),
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
                     type: 'warning'
                 }
             ).then(() => {
-                // this.$request('logout').then(res => {
-                //     if (res.data.returnCode == 0) {
-                //         this.$message({
-                //             message: '退出成功',
-                //             center: true,
-                //             type: 'success'
-                //         });
-
-                //         this.$router.push('/login');
-                //     } else {
-                //         this.$message({
-                //             message: res.data.returnMsg,
-                //             center: true,
-                //             type: 'error'
-                //         });
-                //     }
-                // });
-                localStorage.removeItem('HTTP_ACCESS_TOKEN');
-                this.$router.push('/login');
-            }).catch(() => {});
-        },
-        changePSW () {
-            let that = this;
-            that.$prompt('请输入新的密码', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                inputPattern: /^[a-zA-Z0-9]{6,12}$/,
-                inputType: 'password',
-                inputErrorMessage: '密码应该由6到12位数字或字符串组成'
-            }).then(({ value }) => {
-                that.$request('updatePassword', {'password': value}).then(res => {
-                    console.log('修改密码', res);
+                this.$request('logout').then(res => {
                     if (res.data.returnCode == 0) {
-                        this.$router.push('/login');
-                        that.$message({
-                            type: 'success',
-                            message: '修改密码成功',
-                            center: true
+                        this.$message({
+                            message: '退出成功',
+                            center: true,
+                            type: 'success'
                         });
+                        this.$router.push('/login');
                     } else {
-                        that.$message({
-                            type: 'error',
+                        this.$message({
                             message: res.data.returnMsg,
-                            center: true
+                            center: true,
+                            type: 'error'
                         });
                     }
                 });
-            }).catch(() => {
-                // this.$message({
-                //   type: 'info',
-                //   message: '取消输入'
-                // });
-            });
+                localStorage.removeItem('HTTP_ACCESS_TOKEN');
+                this.$router.push('/login');
+            })
         },
-        handleOpen (key, keyPath) {
-            // console.log(key, keyPath);
-        },
-        handleClose (key, keyPath) {
-            // console.log(key, keyPath);
+        changePwd () {
+          this.dialogVisible = false
         },
         toggleMenu () {
-            this.isCollapse = !this.isCollapse;
-        },
-        changeIsShow () {
-            this.isShow = !this.isShow;
+          this.isCollapse = !this.isCollapse;
         },
         event(){
-          this.eventDialog=true;
+          this.eventDialog = true;
         },
         eventClose(){
-          this.eventDialog=false
-        },
-        handleSetLanguage (lang) {
-          this.$i18n.locale = lang;
-          this.$store.dispatch('app/setLanguage', lang);
-          this.$message({
-              message: 'Switch Language Success',
-              type: 'success'
-          });
+          this.eventDialog = false
         },
     }
 };
@@ -228,7 +144,20 @@ export default {
 <style lang='scss'>
 #sublayout {
   overflow-y: auto;
+}
+.el-container {
+  height: 100vh;
+}
+.el-header {
+  background: url(../../../static/images/headerbg.png) no-repeat;
+  color: #fff;
+  height: 70px !important;
+  line-height: 70px;
+  position: relative;
   .logo{
+    position: absolute;
+    left: 25px;
+    top: 15px;
     line-height: 100%;
     img{
       vertical-align: middle;
@@ -240,70 +169,46 @@ export default {
       margin-left: 0.2rem;
     }
   }
-}
-.el-header {
-  background-color: white;
-  color: green;
-  text-align: left;
-  font-size: 18px;
-  height: 70px !important;
-  line-height: 70px;
-  padding-left: 14px;
-  padding-right: 89px;
-  position: relative;
-  .user_manage {
-    position: absolute;
-    width: 220px;
-    right: 37px;
-    z-index: 12;
-    background-color: #fff;
-    display: none;
-    p {
-      height: 50px;
-      font-size: 14px;
-      line-height: 50px;
-      padding: 0 30px;
-      cursor: pointer;
-    }
-    p:hover {
-      background-color: #999999;
-    }
-  }
-  .search {
-    width: 310px;
-    margin-right: 1.4rem;
 
-    .el-input__icon {
-      font-size: 14px;
-      font-weight: 700;
-    }
-  }
-  .el-input__inner {
-    height: 40px;
-    line-height: 40px;
-    border: none;
-    background-color: rgb(64, 68, 72);
-    color: #666666;
-    font-size: 14px;
-    width: 2rem;
-  }
   .user_box {
     cursor: pointer;
     font-size: 14px;
-    color: black;
+    color: #fff;
+    margin: 0 15px;
     img {
-      width: 40px;
-      height: 40px;
-      margin-right: 23px;
+      margin-right: 10px;
       vertical-align: middle;
+    }
+    i {
+      margin-left: 5px;
+    }
+    .user_manage {
+      position: absolute;
+      width: 220px;
+      right: 37px;
+      z-index: 12;
+      background-color: #fff;
+      color: rgb(102,102,102);
+      display: none;
+      p {
+        height: 50px;
+        font-size: 14px;
+        line-height: 50px;
+        padding: 0 30px;
+        cursor: pointer;
+        &:hover {
+          background-color: #ccc;
+        }
+      }
+    }
+    &:hover {
+      .user_manage {
+        display: block;
+      }
     }
   }
 
-  .user_box:hover {
-    .user_manage {
-      display: block;
-    }
-  }
+
   .message {
     cursor: pointer;
     margin-right: 23px;
@@ -325,6 +230,13 @@ export default {
     vertical-align: middle;
     margin-right: 15px;
     cursor: pointer;
+  }
+}
+
+.el-dialog {
+  .el-input__inner {
+    width: 200px;
+    height: 30px;
   }
 }
 
@@ -366,8 +278,11 @@ export default {
   margin-left: 0;
 }
 .toggleMemu {
-  color: black;
-  margin-left: 0.1rem;
+  position:absolute;
+  left:270px;
+  top:25px;
+  font-size:24px;
+  color:#fff;
   cursor: pointer;
 }
 </style>

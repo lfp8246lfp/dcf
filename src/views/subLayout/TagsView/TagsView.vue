@@ -1,6 +1,5 @@
 <template>
   <div id="tagsview">
-    <i class="el-icon-caret-left jt"></i>
     <scroll-pane ref="scrollPane" class="tags-view-wrapper">
       <router-link
         ref="tag"
@@ -11,7 +10,7 @@
         v-for="tag in Array.from(visitedViews)"
         :key="tag.path"
       >
-        {{generateTitle("menu."+tag.title)}}
+        {{tag.title}}
         <span
           class="el-icon-close"
           v-if="!tag.affix"
@@ -19,15 +18,12 @@
         ></span>
       </router-link>
     </scroll-pane>
-    <i class="el-icon-caret-right jt"></i>
   </div>
 </template>
 
 <script>
 import ScrollPane from './ScrollPane';
 import path from 'path';
-import { mapGetters } from 'vuex';
-import { generateTitle } from '../../../utils/i18n';
 
 export default {
     name: 'TagsView',
@@ -76,6 +72,7 @@ export default {
         },
         addViewTags () {
             const route = this.generateRoute();
+            // console.log("addViewTags", route);
             if (!route) {
                 return false;
             }
@@ -124,7 +121,6 @@ export default {
         closeMenu () {
             this.visible = false;
         },
-        generateTitle
     }
 };
 </script>
@@ -137,8 +133,7 @@ export default {
   border-left: none;
   border-right: none;
   box-sizing: border-box;
-  border:1px solid #eeeeee;
-  display: flex;
+  padding-left: 8px;
   .el-scrollbar__wrap {
     overflow-y: hidden;
     overflow-x: scroll;
@@ -153,19 +148,20 @@ export default {
       cursor: pointer;
       height: 28px;
       line-height: 28px;
-      color: #666666;
-      background: #f7f8fa;
+      border: 1px solid #303030;
+      color: rgb(187,187,187);
+      background: #303030;
       padding: 0 28px;
       font-size: 14px;
       margin-left: 5px;
       &:first-of-type {
         margin-left: 0;
       }
-      // &:last-of-type {
-      //   margin-right: 15px;
-      // }
+      &:last-of-type {
+        margin-right: 15px;
+      }
       &.active {
-        background-color: #018b7e;
+        background-color: #46464B;
         color: #fff;
         border-color: #46464B;
         &::before {
@@ -180,17 +176,10 @@ export default {
         }
       }
     }
-    
-  }
-  .jt{
-    width: 0.47rem;
-    height: 0.47rem;
-    text-align: center;
-    line-height: 0.47rem;
   }
   .el-scrollbar__view {
     height: 100%;
-    background-color: #fff;
+    background-color: #20252B;
     span {
       // color: #000;
       z-index: 999;

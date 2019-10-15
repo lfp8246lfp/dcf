@@ -67,13 +67,13 @@ export default {
 };
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 .scroll-container {
   white-space: nowrap;
   position: relative;
   overflow: hidden;
   width: 100%;
-//   background-color: #20252B;
+  background-color: #20252B;
   // box-sizing: border-box;
   // padding: 0.1rem;
   /deep/ {
