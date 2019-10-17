@@ -35,7 +35,7 @@
       <el-container>
         <side-bar :isCollapse="isCollapse"></side-bar>
         <el-main>
-          <!-- <tags-view></tags-view> -->
+          <tags-view></tags-view>
           <div style="padding:0.31rem 0.31rem 0;background:#f4f6fb;box-sizing:border-box;">
             <router-view></router-view>
             <p class="Copyright">Copyright Company © 2014-2019</p>

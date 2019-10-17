@@ -148,12 +148,12 @@ export default {
       cursor: pointer;
       height: 28px;
       line-height: 28px;
-      border: 1px solid #303030;
-      color: rgb(187,187,187);
-      background: #303030;
+      // border: 1px solid #303030;
+      color: rgb(48,49,51);
+      background: rgb(247, 248, 250);
       padding: 0 28px;
       font-size: 14px;
-      margin-left: 5px;
+      // margin-left: 5px;
       &:first-of-type {
         margin-left: 0;
       }
@@ -161,9 +161,9 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #46464B;
+        background-color: rgb(45, 134, 225);
         color: #fff;
-        border-color: #46464B;
+        // border-color: #46464B;
         &::before {
           content: "";
           background: #fff;
@@ -179,7 +179,7 @@ export default {
   }
   .el-scrollbar__view {
     height: 100%;
-    background-color: #20252B;
+    background-color: #fff;
     span {
       // color: #000;
       z-index: 999;

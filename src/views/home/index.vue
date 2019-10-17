@@ -359,7 +359,14 @@ export default {
       }
     }
   }
-  .el-tabs__nav-wrap::after {
-    background-color: #fff!important;
+  .el-tabs {
+      /deep/ .el-tabs__nav-wrap::after {
+        background-color: #fff!important;
+        height: 0!important;
+      }  
+      /deep/ .el-tabs__nav {
+        float: right;
+      }
   }
+
 </style>
