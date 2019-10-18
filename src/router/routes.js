@@ -11,25 +11,25 @@ const routes = [
         path: '/',
         component: SubLayout,
         // redirect: '/operationmanagement/filemanagement',
-        redirect: '/home',
+        redirect: '/index',
         children: [
             {
-                name: 'shou',
-                path: '/home',
+                name: 'home',
+                path: '/index',
                 component: Home,
                 meta: {
-                    activeMenu: '/home',
+                    activeMenu: '/index',
                     title: '首页',
                     noCache: true,
                     affix: false
                 }
             },
             {
-                name: 'fileManage',
-                path: '/fileManage',
-                component: resolve => require(['views/fileManage'], resolve),
+                name: 'archivesManage',
+                path: '/archivesmanage',
+                component: resolve => require(['views/archivesManage'], resolve),
                 meta: {
-                    activeMenu: '/fileManage',
+                    activeMenu: '/archivesmanage',
                     title: '档案管理',
                     noCache: true,
                     affix: false
@@ -37,21 +37,65 @@ const routes = [
             },
             {
                 name: 'incomeStatistics',
-                path: '/incomeStatistics',
+                path: '/incomestatistics',
                 component: resolve => require(['views/incomeStatistics'], resolve),
                 meta: {
-                    activeMenu: '/incomeStatistics',
+                    activeMenu: '/incomestatistics',
                     title: '收入统计',
                     noCache: true,
                     affix: false
                 }
             },
             {
-                name: 'energyStatistics',
-                path: '/energyStatistics',
-                component: resolve => require(['views/energyStatistics'], resolve),
+                name: 'powerStatistics',
+                path: '/powerstatistics',
+                component: resolve => require(['views/powerStatistics'], resolve),
                 meta: {
-                    activeMenu: '/energyStatistics',
+                    activeMenu: '/powerStatistics',
+                    title: '用能统计',
+                    noCache: true,
+                    affix: false
+                }
+            },
+            {
+                name: 'incomeManage',
+                path: '/incomemanage',
+                component: resolve => require(['views/incomemanage'], resolve),
+                meta: {
+                    activeMenu: '/incomemanage',
+                    title: '收入管理',
+                    noCache: true,
+                    affix: false
+                }
+            },
+            {
+                name: 'billManage',
+                path: '/billmanage',
+                component: resolve => require(['views/billManage'], resolve),
+                meta: {
+                    activeMenu: '/billmanage',
+                    title: '用能统计',
+                    noCache: true,
+                    affix: false
+                }
+            },
+            {
+                name: 'valueAddService',
+                path: '/valueaddservice',
+                component: resolve => require(['views/valueAddService'], resolve),
+                meta: {
+                    activeMenu: '/valueaddservice',
+                    title: '用能统计',
+                    noCache: true,
+                    affix: false
+                }
+            },
+            {
+                name: 'priceManage',
+                path: '/priceManage',
+                component: resolve => require(['views/priceManage'], resolve),
+                meta: {
+                    activeMenu: '/priceManage',
                     title: '用能统计',
                     noCache: true,
                     affix: false

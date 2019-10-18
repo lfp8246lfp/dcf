@@ -1,4 +1,4 @@
-import {http, http1} from './index';
+import {http, http1} from './http';
 export default [
     {
         name: 'login',
@@ -7,7 +7,7 @@ export default [
     },
     {
         name: 'getMenuList',
-        method: 'get',
-        url: http + '/service/authservice/AuthService/getMenuList?systemid=-1'
+        method: 'post',
+        url: http + '/service/authservice/AuthService/getMenu'
     },
 ];

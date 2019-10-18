@@ -83,7 +83,7 @@ export default {
     },
     data () {
         return {
-            accountId: localStorage.getItem('accountId'),
+            accountId: localStorage.getItem('accountid'),
             dialogVisible: false,
             form: {
               pwdOld: '',

@@ -2,22 +2,22 @@
     <div>
       <h1>登录</h1>
     <el-form ref="form" :model="form" :rules="loginRules" style="border-bottom:1px solid #eee">
-      <el-form-item prop="mob">
+      <el-form-item prop="accountid">
         <h3>手机号</h3>
         <div class="ipt">
           <div class="icon">
             <img src="../../../static/images/mob.png" alt="">
           </div>
-          <input type="text" v-model="form.mob" placeholder="请输入手机号">
+          <input type="text" v-model="form.accountid" placeholder="请输入手机号">
         </div>
       </el-form-item>
-      <el-form-item prop="pwd">
+      <el-form-item prop="password">
         <h3>密码</h3>
         <div class="ipt">
           <div class="icon">
             <img src="../../../static/images/lock.png" alt="">
           </div>
-          <input type="password" v-model="form.pwd" placeholder="请输入密码">
+          <input type="password" v-model="form.password" placeholder="请输入密码">
         </div>
         <p style="text-align:right">
           <a href="/forget1">忘记密码?</a>
@@ -52,13 +52,13 @@ export default {
         };
         return {
             loginRules: {
-                mob: [{ required: true, trigger: 'blur', validator: validateUsername }],
-                pwd: [{ required: true, trigger: 'blur', validator: validatePassword }]
+                accountid: [{ required: true, trigger: 'blur', validator: validateUsername }],
+                password: [{ required: true, trigger: 'blur', validator: validatePassword }]
             },
             loading: false,
             form: {
-                mob: '',
-                pwd: ''
+                accountid: '',
+                password: ''
             },
             remember: false
         };
@@ -69,15 +69,16 @@ export default {
                 if (valid) {
                     this.loading = true
                     this.$request('login', this.form).then(res => {
+                      console.log(res)
                         if (res.data.success == "1") {
-                            localStorage.setItem('HTTP_ACCESS_TOKEN', res.data.HTTP_ACCESS_TOKEN);
-                            localStorage.setItem('accountid', this.form.name);
+                            localStorage.setItem('HTTP_ACCESS_TOKEN', res.data.HTTP_ACCESS_TOKEN)
+                            localStorage.setItem('accountid', this.form.accountid)
                             this.$message({
                                 message: '登录成功',
                                 center: true,
                                 type: 'success'
                             });
-                            this.$router.push('/operationmanagement/filemanagement')
+                            this.$router.push('/index')
                         } else {
                             this.$message({
                                 message: "登录失败",

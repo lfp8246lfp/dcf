@@ -25,7 +25,8 @@
             :data="tableData"
             border
             stripe 
-            style="width: 100%">
+            style="width: 100%"
+            :header-cell-style="{background:'rgb(250,250,250)'}">
             <el-table-column
               prop="room"
               label="房间名称">

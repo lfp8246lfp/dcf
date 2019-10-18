@@ -19,8 +19,7 @@ router.beforeEach(async (to, from, next) => {
     } else {
         let token = localStorage.getItem('HTTP_ACCESS_TOKEN');
         if (token == undefined) {
-            // next('/enter');
-            next()
+            next('/enter');
         } else {
             next();
         }

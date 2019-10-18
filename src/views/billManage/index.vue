@@ -1,6 +1,6 @@
 <template>
   <div>
-    123
+    账单管理
   </div>
 </template>
 <script>

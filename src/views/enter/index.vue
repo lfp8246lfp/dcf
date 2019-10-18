@@ -27,10 +27,11 @@ export default {
 <style lang="scss" scoped>
 
 .login{
-  position: relative;
+  position: absolute;
   display: flex;
   justify-content: flex-end;
   width: 100%;
+  height: 100%;
   background: url("../../../static/images/loginbg.jpg") no-repeat;
   background-size: 100% 100%;
   .head {

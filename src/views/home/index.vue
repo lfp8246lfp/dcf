@@ -3,7 +3,7 @@
     <ul class="list">
       <li>
         <div class="left">
-          <span>￥{{data.income}}</span>
+          <span>￥{{homeData.totalMoney}}</span>
           <p>累计总收入</p>
         </div>
         <div class="right">
@@ -12,7 +12,7 @@
       </li>
       <li>
         <div class="left">
-          <span>￥{{data.cash}}</span>
+          <span>￥{{homeData.withdrawalBalance}}</span>
           <p>可提现收入</p>
         </div>
         <div class="right">
@@ -21,7 +21,7 @@
       </li>
       <li>
         <div class="left">
-          <span>{{data.device}}</span>
+          <span>{{homeData.allDevCount}}</span>
           <p>设备总数</p>
         </div>
         <div class="right">
@@ -30,7 +30,7 @@
       </li>
       <li>
         <div class="left">
-          <span>{{data.online}}</span>
+          <span>{{homeData.onlinedev}}</span>
           <p>在线设备数</p>
         </div>
         <div class="right">
@@ -40,44 +40,46 @@
     </ul>
     <el-row :gutter="30">
       <el-col :span="8">
-        <el-card style="position:relative;height:400px">
-          <div id="ring">
-          </div>
-          <div class="total">
-            <h3 style="font-size:28px">{{total}}</h3>
-            <p style="font-size:14px;color:rgb(164,164,164)">总设备数</p>
+        <el-card style="height:400px">
+          <div class="chart" style="position:relative">
+            <div id="ring">
+            </div>
+            <div class="total">
+              <h3 style="font-size:28px">{{total}}</h3>
+              <p style="font-size:14px;color:rgb(164,164,164)">总设备数</p>
+            </div>
           </div>
         </el-card>
       </el-col>
       <el-col :span="16">
         <el-card style="height:400px">
           <el-tabs v-model="active" @tab-click="handleClick">
-            <el-tab-pane label="合计" name="first">
-              <div id="first"></div>
+            <el-tab-pane label="合计" name="type">
+              <div id="type"></div>
             </el-tab-pane>
-            <el-tab-pane label="WIFI电表" name="second">
-              <div id="second"></div>
+            <el-tab-pane label="WIFI电表" name="type3">
+              <div id="type3"></div>
             </el-tab-pane>
-            <el-tab-pane label="WIFI水表" name="third">
-              <div id="third"></div>
+            <el-tab-pane label="WIFI水表" name="type6">
+              <div id="type6"></div>
             </el-tab-pane>
-            <el-tab-pane label="充电桩" name="fourth">
-              <div id="fourth"></div>
+            <el-tab-pane label="充电桩" name="type1">
+              <div id="type1"></div>
             </el-tab-pane>
-            <el-tab-pane label="临时充电设备" name="fifth">
-              <div id="fifth"></div>
+            <el-tab-pane label="临时充电设备" name="type7">
+              <div id="type7"></div>
             </el-tab-pane>
-            <el-tab-pane label="房租" name="sixth">
-              <div id="sixth"></div>
+            <el-tab-pane label="房租" name="type8">
+              <div id="type8"></div>
             </el-tab-pane>
-            <el-tab-pane label="物业费" name="seventh">
-              <div id="seventh"></div>
+            <el-tab-pane label="物业费" name="type9">
+              <div id="type9"></div>
             </el-tab-pane>
-            <el-tab-pane label="燃气费" name="eighth">
-              <div id="eighth"></div>
+            <el-tab-pane label="燃气费" name="type10">
+              <div id="type10"></div>
             </el-tab-pane>
-            <el-tab-pane label="押金" name="ninth">
-              <div id="ninth"></div>
+            <el-tab-pane label="押金" name="type11">
+              <div id="type11"></div>
             </el-tab-pane>
           </el-tabs>
         </el-card>
@@ -91,17 +93,17 @@
             <li>
               <img src="../../../static/images/totalElectricity.png" alt="">
               <p>总用电量</p>
-              <span>{{energy.totalElectricity}}kWh</span>
+              <span>{{homeData.totalelectricity}}kWh</span>
             </li>
             <li>
               <img src="../../../static/images/thisElectricity.png" alt="">
               <p>本月耗电量</p>
-              <span>{{energy.thisElectricity}}kWh</span>
+              <span>{{homeData.Monthelectricity}}kWh</span>
             </li>
             <li>
               <img src="../../../static/images/lastElectricity.png" alt="">
               <p>上月耗电量</p>
-              <span>{{energy.lastElectricity}}kWh</span>
+              <span>{{homeData.lastMonthElectricity}}kWh</span>
             </li>
           </ul>
         </el-card>
@@ -112,17 +114,17 @@
             <li>
               <img src="../../../static/images/totalWater.png" alt="">
               <p>总用水量</p>
-              <span>{{energy.totalWater}}t</span>
+              <span>{{homeData.totalWater}}t</span>
             </li>
             <li>
               <img src="../../../static/images/thisWater.png" alt="">
               <p>本月用水量</p>
-              <span>{{energy.thisWater}}t</span>
+              <span>{{homeData.MonthWater}}t</span>
             </li>
             <li>
               <img src="../../../static/images/lastWater.png" alt="">
               <p>上月用水量</p>
-              <span>{{energy.lastWater}}t</span>
+              <span>{{homeData.lastMonthWater}}t</span>
             </li>
           </ul>
         </el-card>
@@ -135,7 +137,7 @@ import echarts from 'echarts'
 export default {
   data () {
     return {
-      active: 'first',
+      active: 'type',
       data: {
         income: 6469.5,
         cash: 2333.3,
@@ -155,6 +157,11 @@ export default {
         totalWater: 233.9,
         thisWater: 14.9,
         lastWater: 15.4,
+      },
+      homeData: {},
+      recentData: {
+        xAxis: [],
+        yAxis: []
       }
     };
   },
@@ -186,13 +193,18 @@ export default {
               name:'访问来源',
               type:'pie',
               radius: ['40%', '50%'],
-              avoidLabelOverlap: false,
+              avoidLabelOverlap: true,
               label: {
                 normal: {
                   formatter: '{b} \n {d}% \n {c}',
                 }
               },
-              data: this.deviceData,
+              data: [
+                {value:this.homeData.wifinum, name:'WIFI电表'},
+                {value:this.homeData.watermeter, name:'WIFI水表'},
+                {value:this.homeData.chargingnum, name:'充电桩'},
+                {value:this.homeData.temporary, name:'临时充电设备'}
+              ],
               color: ['rgb(82,184,252)','rgb(114,219,119)','rgb(253,177,91)','rgb(255,90,166)']
             }
           ]
@@ -200,16 +212,24 @@ export default {
     },
 
     handleClick(e) {
-      this.$nextTick(() => {
-        this.drawBars(e.name)
-      })
+      this.getLast30Days(e.name)
     },
 
-    getLast30Days() {
-          return new Array(30).fill(undefined).map((item, index) => {
-              let day = new Date(+new Date() - index*24*60*60*1000)
-              return day.getMonth() + 1 + '-' + day.getDate()
-          }).reverse()
+    getLast30Days(name) {
+      
+      let type = name.slice(4).length > 0 ? Number(name.slice(4)) : null
+
+      this.$request('recentEarnings', {params: {type}}).then(res => {
+        if (res.code === 200) {
+          console.log('recentEarnings', res)
+          this.recentData = {
+            xAxis: res.data.monthTranctions.map(item => item.date),
+            yAxis: res.data.monthTranctions.map(item => item.money)
+          }
+        }
+      }).then(res => {
+        this.drawBars(name)
+      })
     },
 
     drawBars(id) {
@@ -224,7 +244,7 @@ export default {
             xAxis : [
                 {
                     type : 'category',
-                    data : this.getLast30Days(),
+                    data : this.recentData.xAxis,
                     axisLabel: {
                         margin: 10,
                         interval: 1000,
@@ -258,33 +278,39 @@ export default {
                     name:'income',
                     type:'bar',
                     barWidth: '30%',
-                    data:[10, 52, 200, 334, 390, 330, 220, 10, 52, 200, 334, 390, 330, 220, 10, 52, 200, 334, 390, 330, 220, 10, 52, 200, 334, 390, 330, 220, 123, 456]
+                    data:this.recentData.yAxis
                 }
             ]
       })
     },
-  
+
+    getHomeData() {
+      this.$request('homeData', {params: {HTTP_ACCESS_TOKEN: localStorage.getItem('HTTP_ACCESS_TOKEN')}}).then(res => {
+        console.log('homeData', res)
+        if (res.code === 200) {
+          this.homeData = res.data
+        }
+      }).then(res => {
+        this.drawRing('ring')
+      })
+    }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.drawRing('ring')
-    })
-    this.$nextTick(() => {
-      this.drawBars('first')
-    })
+    this.getHomeData()
+    this.getLast30Days('type')
   }
 }
 </script>
 <style lang='scss' scoped>
-  #ring, #first, #second, #third, #fourth, #fifth, #sixth, #seventh, #eighth, #ninth {
+  [id] {
     width: 100%;
     height: 350px;
   }
   .total {
     position:absolute;
-    left:230px;
+    left:50%;
     top:50%;
-    transform:translate(0,-50%);
+    transform:translate(-50%,-50%);
     text-align:center
   }
   .list {

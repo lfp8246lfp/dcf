@@ -8,86 +8,37 @@
       active-text-color="#fff"
       :collapse="isCollapse"
       class="el-menu-vertical-demo"
-      :router="true"
-    >
-      <!-- 一级菜单 -->
-      <template v-for="item in list">
-        <el-submenu
-          v-if="item.children && item.children.length"
-          :index="item.path"
-          :key="item.path"
-        >
-          <template slot="title">
-            <i :class="item.icon"></i>
-            <!-- <i><img :src="item.icon" alt=""></i> -->
-            <span>{{item.name}}</span>
-          </template>
-
-          <!-- 二级菜单 -->
-          <template v-for="itemChild in item.children">
-            <el-submenu
-              v-if="itemChild.children && itemChild.children.length"
-              :index="itemChild.path"
-              :key="itemChild.path"
-            >
-              <template slot="title">
-                <i :class="itemChild.icon"></i>
-                <span>{{itemChild.name}}</span>
-              </template>
-
-              <!-- 三级菜单 -->
-              <el-menu-item
-                v-for="itemChild_Child in itemChild.children"
-                :index="itemChild_Child.path"
-                :key="itemChild_Child.path"
-              >
-                <i :class="itemChild_Child.icon"></i>
-                <!-- <i>
-                    <img :src="itemChild.icon" alt="">
-                </i>-->
-                <span slot="title">{{itemChild_Child.name}}</span>
-              </el-menu-item>
-            </el-submenu>
-
-            <el-menu-item v-else :index="itemChild.path" :key="itemChild.path">
-              <i :class="itemChild.icon"></i>
-              <span slot="title">{{itemChild.name}}</span>
-            </el-menu-item>
-          </template>
-        </el-submenu>
-
-        <el-menu-item v-else :index="item.path" :key="item.path">
-          <i :class="item.icon"></i>
-          <!-- <i><img :src="item.icon" alt=""></i> -->
-          <span slot="title">{{item.name}}</span>
-        </el-menu-item>
-      </template>
+      :router="true">
+      <el-menu-item
+        v-for="item in list"
+        :index="item.path"
+        :key="item.path">
+          <i :class="item.data.menu.icon"></i>
+          <span slot="title">{{item.data.menu.title.split('.')[1] | titleFilter}}</span>
+      </el-menu-item>
     </el-menu>
   </el-aside>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import { generateTitle } from '../../../utils/i18n';
-
 export default {
     name: 'SideBar',
     data () {
         return {
             list: [
-              {path: 'home', name: '首页'},
-              {path: 'fileManage', name: '档案管理'},
-              {path: 'incomeManage', name: '收入管理'},
-              {path: 'incomeStatistics', name: '收入统计'},
-              {path: 'energyStatistics', name: '用能统计'},
-              {path: 'billManage', name: '账单管理'},
-              {path: 'valueAddedService', name: '增值服务'},
-              {path: 'priceManage', name: '价格管理'},
+              // {path: 'home', name: '首页'},
+              // {path: 'archivesManage', name: '档案管理'},
+              // {path: 'incomeManage', name: '收入管理'},
+              // {path: 'incomeStatistics', name: '收入统计'},
+              // {path: 'powerStatistics', name: '用能统计'},
+              // {path: 'billManage', name: '账单管理'},
+              // {path: 'valueAddService', name: '增值服务'},
+              // {path: 'priceManage', name: '价格管理'},
             ]
         };
     },
     props: ['isCollapse'],
-    components: {},
     computed: {
     // 点击菜单事件 返回路由
         activeMenu () {
@@ -100,23 +51,49 @@ export default {
         }
     },
     mounted () {
-        // this.getMenuList();
+        this.getMenuList();
     },
     methods: {
         getMenuList () {
-            this.$request('getMenuList',{params:{systemId:7}}).then(res => {
-                console.log('getMenuList', res);
-                this.list = res.data.menuInfoItems;
-                localStorage.setItem('menu', JSON.stringify(this.list));
-            });
-        },
-        handleOpen (key, keyPath) {
-            // console.log(key, keyPath);
-        },
-        handleClose (key, keyPath) {
-            // console.log(key, keyPath);
-        },
-        generateTitle
+            this.$request('getMenuList', {HTTP_ACCESS_TOKEN: localStorage.getItem('HTTP_ACCESS_TOKEN')}).then(res => {
+                console.log('getMenuList', res)
+                this.list = res.data.children[0].children
+                localStorage.setItem('menu', JSON.stringify(this.list))
+            })
+        }
+    },
+    filters: {
+      titleFilter(title) {
+        switch (title) {
+          case 'index':
+            return '首页';
+            break;
+          case 'archivesmanage':
+            return '档案管理';
+            break;
+          case 'incomemanage':
+            return'收入管理';
+            break;
+          case 'incomestatistics':
+            return '收入统计';
+            break;
+          case 'powerstatistics':
+            return '用能统计';
+            break;
+          case 'billmanage':
+            return '账单管理';
+            break;
+          case 'valueaddservice':
+            return '增值服务';
+            break;
+          case 'pricemanage':
+            return '价格管理';
+            break;
+          case 'operationmanagement':
+            return '物业管理平台';
+            break;
+        }
+      }
     }
 };
 </script>
@@ -125,11 +102,13 @@ export default {
 <style lang="scss" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 240px;
-  min-height: 92.5vh;
+  // min-height: 92.5vh;
 }
 .el-aside {
   height: 100%;
-  background-color: rgb(37,42,47);
+  background-color: #20252B;
+  padding-top: 30px;
+  box-sizing: border-box;
 }
 .el-menu {
   border-right: none;
@@ -137,22 +116,23 @@ export default {
 .el-submenu__title {
   background-color: #20252B;
   color:#B4B6B7;
-  
-  i {
-     margin-right: 10px;
-  }
 }
 .el-menu-item {
   font-size: 14px;
   height: 50px!important;
   line-height: 50px!important;
   padding-left: 14px;
+  box-sizing: border-box;
   i {
     margin-right: 10px;
   }
 }
 .el-menu-item:hover {
   background-color: #0D141B!important; 
+}
+.el-menu-item:active {
+  background-color: #0D141B!important; 
+  border-left: 4px solid rgb(45,134,225);
 }
 .active{
      background:#0D141B;
@@ -190,7 +170,7 @@ export default {
 }
 
 .el-menu--collapse {
-    width: 50px!important;
+    width: 60px!important;
     // text-align: center;
 }
 .fa {

@@ -16,9 +16,9 @@
               <el-button type="primary" icon="el-icon-search"></el-button>
             </div>
             <div class="shortcut">
-              <el-button size="medium">近一周</el-button>
-              <el-button size="medium">近一个月</el-button>
-              <el-button size="medium">近三个月</el-button>
+              <el-button @click="date = [new Date(+new Date() - 7*24*60*60*1000), new Date()]">近一周</el-button>
+              <el-button @click="date = [new Date(+new Date() - 30*24*60*60*1000), new Date()]">近一个月</el-button>
+              <el-button @click="date = [new Date(+new Date() - 3*30*24*60*60*1000), new Date()]">近三个月</el-button>
             </div>
           </div>
 
@@ -44,7 +44,8 @@
             :data="tableData"
             border
             stripe 
-            style="width: 100%">
+            style="width: 100%"
+            :header-cell-style="{background:'rgb(250,250,250)'}">
             <el-table-column
               prop="time"
               label="时间">
