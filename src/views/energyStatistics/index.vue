@@ -25,8 +25,7 @@
             :data="tableData"
             border
             stripe 
-            style="width: 100%"
-            :header-cell-style="{background:'rgb(250,250,250)'}">
+            style="width: 100%">
             <el-table-column
               prop="room"
               label="房间名称">
@@ -84,25 +83,13 @@ export default {
           Wpower: '232.1t',
         },
       ],
-      otherParams: {
-        pageNum: 1,
-        pageSize: 10,
-        commaddress: 31000274
-      }
     };
   },
   methods:{
     handleSizeChange() {
 
     },
-    handleCurrentChange() {},
-
-    getPowerData() {
-      // this.$request('energyStatistics', )
-    }
-  },
-  mounted() {
-    this.getPowerData()
+    handleCurrentChange() {}
   }
 }
 </script>

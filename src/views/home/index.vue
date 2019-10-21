@@ -150,14 +150,7 @@ export default {
           {value:236, name:'充电桩'},
           {value:74, name:'临时充电设备'}
       ],
-      energy: {
-        totalElectricity: 2333.3,
-        thisElectricity: 1284.9,
-        lastElectricity: 1186.1,
-        totalWater: 233.9,
-        thisWater: 14.9,
-        lastWater: 15.4,
-      },
+      
       homeData: {},
       recentData: {
         xAxis: [],
@@ -167,8 +160,9 @@ export default {
   },
   computed: {
     total() {
-      let arr = this.deviceData.map(item => item.value)
-      return arr.reduce((pre,next) => pre + next)
+      // let arr = this.deviceData.map(item => item.value)
+      // return arr.reduce((pre,next) => pre + next)
+      return this.homeData.wifinum + this.homeData.watermeter + this.homeData.chargingnum + this.homeData.temporary
     }
   },
   methods:{
@@ -311,7 +305,7 @@ export default {
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
-    text-align:center
+    text-align:center;
   }
   .list {
     display: flex;

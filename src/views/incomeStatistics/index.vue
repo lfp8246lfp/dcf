@@ -13,19 +13,19 @@
                 end-placeholder="结束日期"
                 style="border-top-right-radius:0;border-bottom-right-radius:0;">
               </el-date-picker>
-              <el-button type="primary" icon="el-icon-search"></el-button>
+              <el-button type="primary" icon="el-icon-search" @click="getRevenue()"></el-button>
             </div>
             <div class="shortcut">
-              <el-button @click="date = [new Date(+new Date() - 7*24*60*60*1000), new Date()]">近一周</el-button>
-              <el-button @click="date = [new Date(+new Date() - 30*24*60*60*1000), new Date()]">近一个月</el-button>
-              <el-button @click="date = [new Date(+new Date() - 3*30*24*60*60*1000), new Date()]">近三个月</el-button>
+              <el-button @click="dateShortcut()">近一周</el-button>
+              <el-button @click="dateShortcut(1)">近一个月</el-button>
+              <el-button @click="dateShortcut(3)">近三个月</el-button>
             </div>
           </div>
 
           <div class="type">
             <h3>收入类型</h3>
             <div class="typeTabs">
-              <el-button v-for="item in typeData" :key="item" @click="tabClick(item)">{{item}}</el-button>
+              <el-button v-for="item in typeData" :key="item" @click="tabClick(item)">{{item | typeFilter}}</el-button>
             </div>
           </div>
       </el-card>
@@ -47,19 +47,20 @@
             style="width: 100%"
             :header-cell-style="{background:'rgb(250,250,250)'}">
             <el-table-column
-              prop="time"
-              label="时间">
+              prop="transactionsdate"
+              label="时间"
+              :formatter="formatter">
             </el-table-column>
             <el-table-column
-              prop="income"
+              prop="transactionsvalue"
               label="收入">
             </el-table-column>
             <el-table-column
-              prop="incomeType"
+              prop="detailtype"
               label="收入类型">
             </el-table-column>
             <el-table-column
-              prop="userName"
+              prop="chatname"
               label="用户姓名">
             </el-table-column>
           </el-table>
@@ -83,57 +84,104 @@ export default {
   name: 'incomeStatistics',
   data () {
     return {
-      date: [new Date(+new Date() - 30*24*60*60*1000), new Date()],
-      typeData: ['全部','WIFI电表','WIFI水表','充电站','临时充电设备','房租','物业费','燃气费','押金'],
-      active: '',
-      tableData: [
-        {
-          time: '2019-09-23 13:59:11',
-          income: 10.0,
-          incomeType: 'WIFI表',
-          userName: '某某某'
-        },
-        {
-          time: '2019-09-23 13:59:11',
-          income: 10.0,
-          incomeType: 'WIFI表',
-          userName: '某某某'
-        },
-        {
-          time: '2019-09-23 13:59:11',
-          income: 10.0,
-          incomeType: 'WIFI表',
-          userName: '某某某'
-        },
-        {
-          time: '2019-09-23 13:59:11',
-          income: 10.0,
-          incomeType: 'WIFI表',
-          userName: '某某某'
-        },
-        {
-          time: '2019-09-23 13:59:11',
-          income: 10.0,
-          incomeType: 'WIFI表',
-          userName: '某某某'
-        },
-        
-      ],
-      total: 100,
+      date: [new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()],
+      typeData: [0,3,6,1,7,8,9,10,11],
+      type: 0,
+      tableData: [],
+      pageParams: {
+        pageNum: 1,
+        pageSize: 10
+      },
+      total: 0,
     };
   },
+  filters: {
+    typeFilter(item) {
+      switch (item) {
+        case 0:
+          return '全部';
+          break;
+        case 3:
+          return 'WIFI电表';
+          break;
+        case 1:
+          return '充电站';
+          break;
+        case 6:
+          return 'WIFI水表';
+          break;
+        case 7:
+          return '临时充电设备';
+          break;
+        case 8:
+          return '房租';
+          break;
+        case 9:
+          return '物业费';
+          break;
+        case 10:
+          return '燃气费';
+          break;
+        case 11:
+          return '押金';
+          break;
+      }
+    }
+  },
   methods:{
-    tabClick(i) {
-      this.active = i
-      console.log(123)
+    dateShortcut(time) {
+      console.log(time)
+      if (time) {
+        this.date = [new Date(new Date().setMonth(new Date().getMonth() - time)), new Date()]
+      } else {
+        this.date = [new Date(+new Date() - 7*24*60*60*1000), new Date()]
+      }
+      console.log(this.date)
+      this.getRevenue()
     },
-    handleSizeChange() {
+    tabClick(type) {
+      this.pageParams.pageNum = 1
+      this.pageParams.pageSize = 10
+      this.getRevenue(type)
+    },
+    handleSizeChange(size) {
+      this.pageParams.pageSize = size
+      this.getRevenue()
+    },
+    handleCurrentChange(page) {
+      this.pageParams.pageNum = page
+      this.getRevenue()
+    },
 
+    getRevenue(t = this.type) {
+      let type = t === 0 ? null : t
+      let params = {
+        beginAt: this.dateFormat(this.date[0]),
+        endAt: this.dateFormat(this.date[1]),
+        type,
+        ...this.pageParams
+      }
+      console.log('收益统计参数', params)
+      this.$request('revenueStatistics', {params}).then(res => {
+        console.log('第一条:', JSON.stringify(res.data.items[0]), '\n数量:', res.data.items.length,'\n收益统计数据:', res.data)
+        if (res.code === 200) {
+          this.tableData = res.data.items
+          this.total = res.data.total
+          this.type = t
+        }
+      })
     },
-    handleCurrentChange() {}
+
+    dateFormat(date) {
+      return '' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    },
+
+    formatter(row) {
+      return this.dateFormat(new Date(row.transactionsdate))
+    }
   },
   mounted() {
-
+    this.getRevenue()
   }
 }
 </script>
