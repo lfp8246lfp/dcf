@@ -28,27 +28,27 @@
             style="width: 100%"
             :header-cell-style="{background:'rgb(250,250,250)'}">
             <el-table-column
-              prop="room"
+              prop="roomid"
               label="房间名称">
             </el-table-column>
             <el-table-column
-              prop="user"
+              prop="roomname"
               label="住户名">
             </el-table-column>
             <el-table-column
-              prop="meter"
+              prop="commaddress1"
               label="电表编号">
             </el-table-column>
             <el-table-column
-              prop="Epower"
+              prop="electricityconsumption"
               label="用电量">
             </el-table-column>
             <el-table-column
-              prop="waterMeter"
+              prop="commaddress2"
               label="水表编号">
             </el-table-column>
             <el-table-column
-              prop="Wpower"
+              prop="waterconsumption"
               label="用水量">
             </el-table-column>
           </el-table>
@@ -61,7 +61,7 @@
           :page-sizes="[10, 20, 30]"
           :page-size="10"
           layout="prev, pager, next, sizes"
-          :total="100">
+          :total="total">
         </el-pagination>
       </div>
 
@@ -74,21 +74,13 @@ export default {
   data () {
     return {
       date: [new Date(+new Date() - 30*24*60*60*1000), new Date()],
-      tableData: [
-        {
-          room: 101,
-          user: '小明',
-          meter: 20190219,
-          Epower: '220.1kWh',
-          waterMeter: 20190219,
-          Wpower: '232.1t',
-        },
-      ],
-      otherParams: {
+      tableData: [],
+      pageParams: {
         pageNum: 1,
         pageSize: 10,
-        commaddress: 31000274
-      }
+        // commaddress: 31000274
+      },
+      total: 0
     };
   },
   methods:{
@@ -98,8 +90,22 @@ export default {
     handleCurrentChange() {},
 
     getPowerData() {
-      // this.$request('energyStatistics', )
-    }
+      let params = {
+        beginAt: this.dateFormat(this.date[0]),
+        endAt: this.dateFormat(this.date[1]),
+        ...this.pageParams
+      }
+      console.log('用能统计参数',params)
+      this.$request('energyStatistics', {params}).then(res => {
+        console.log('用能统计',res.data)
+        this.tableData = res.data.items
+        this.total = res.data.total
+      })
+    },
+
+    dateFormat(date) {
+      return '' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    },
   },
   mounted() {
     this.getPowerData()

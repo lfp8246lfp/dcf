@@ -18,11 +18,13 @@ router.beforeEach(async (to, from, next) => {
         next();
     } else {
         let token = localStorage.getItem('HTTP_ACCESS_TOKEN');
-        if (token == undefined) {
-            next('/enter');
-        } else {
-            next();
-        }
+        // if (token == undefined) {
+        //     next('/enter');
+        // } else {
+        //     next();
+        // }
+        if (!token) return next('/enter')
+        next()
     }
 });
 

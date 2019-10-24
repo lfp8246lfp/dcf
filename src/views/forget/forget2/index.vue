@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>找回密码</h1>
-    <el-form ref="form" :model="form" :rules="registerRules" style="border-bottom:1px solid #eee">
-      <el-form-item prop="mob">
+    <el-form ref="form" :model="form" style="border-bottom:1px solid #eee">
+      <el-form-item>
         <h3>密码</h3>
         <div class="ipt">
           <div class="icon">
@@ -11,7 +11,7 @@
           <input type="password" v-model="form.pwd" placeholder="请输入密码">
         </div>
       </el-form-item>
-      <el-form-item prop="msg">
+      <el-form-item>
         <h3>确认密码</h3>
         <div class="ipt">
           <div class="icon">
@@ -30,35 +30,51 @@
 <script>
 export default {
   data () {
-    const validateUsername = (rule, value, callback) => {
-            if (!value.trim()) {
-                callback(new Error(this.$t('login.accountErr')));
-            } else {
-                callback();
-            }
-        };
-        const validatePassword = (rule, value, callback) => {
-            if (value.length < 3) {
-                callback(new Error(this.$t('login.passErr')));
-            } else {
-                callback();
-            }
-        };
 
     return {
-      registerRules: {
-                mob: [{ required: true, trigger: 'blur', validator: validateUsername }],
-                msg: [{ required: true, trigger: 'blur', validator: validatePassword }]
-            },
-            form: {
-                pwd: '',
-                confirm:''
-            }
+        form: {
+            pwd: '',
+            confirm:''
+        }
     };
   },
   methods: {
         confirmBtn () {
-          this.$router.push('/forget3')
+          if (this.form.pwd.trim().length > 0) {
+            if (this.form.pwd === this.form.confirm) {
+              let params = {
+                loginid: sessionStorage.getItem('mob'),
+                smscode: sessionStorage.getItem('auth'),
+                password: this.form.pwd
+              }
+              this.$request('findPassword', params).then(res => {
+                if (res.data.returnCode === 1) {
+                  console.log(res)
+                  this.$message({
+                      type: 'success',
+                      message: res.data.returnMsg
+                  })
+                  sessionStorage.clear()
+                  this.$router.push('/forget3')
+                } else {
+                  this.$message({
+                      type: 'error',
+                      message: res.data.returnMsg
+                  })
+                }
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '两次输入的密码不一致'
+              })
+            }
+          } else {
+            this.$message({
+              type: 'error',
+              message: '请输入密码'
+            })
+          }
         },
     }
 }

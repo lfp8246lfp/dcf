@@ -49,14 +49,14 @@
         :visible.sync="dialogVisible"
         width="640px">
 
-        <el-form ref="form" :model="form" label-width="190px">
-          <el-form-item label="当前密码">
+        <el-form ref="form" :model="form" :rules="changePwdRules" label-width="190px">
+          <el-form-item label="当前密码" prop="pwdOld">
             <el-input v-model="form.pwdOld"></el-input>
           </el-form-item>
-          <el-form-item label="新密码">
+          <el-form-item label="新密码" prop="pwdNew">
             <el-input v-model="form.pwdNew"></el-input>
           </el-form-item>
-          <el-form-item label="确认新密码">
+          <el-form-item label="确认新密码" prop="confirm">
             <el-input v-model="form.confirm"></el-input>
           </el-form-item>
         </el-form>
@@ -82,6 +82,31 @@ export default {
         SideBar,
     },
     data () {
+      const validatePwdOld = (rule, value, callback) => {
+          if (!value.trim()) {
+              callback(new Error('请输入原密码'))
+          } else {
+              callback()
+          }
+      };
+      const validatePwdNew = (rule, value, callback) => {
+          if (!value.trim()) {
+              callback(new Error('密码不能为空'))
+          } else if (value.trim().length < 6) {
+              callback(new Error('密码至少为6位'))
+          } else if (value === this.form.pwdOld) {
+              callback(new Error('不能与原密码相同'))
+          } else {
+            callback()
+          }
+      };
+      const validateConfirm = (rule, value, callback) => {
+          if (value !== this.form.pwdNew) {
+              callback(new Error('两次密码不一致'))
+          } else {
+              callback()
+          }
+      };
         return {
             accountId: localStorage.getItem('accountid'),
             dialogVisible: false,
@@ -90,7 +115,12 @@ export default {
               pwdNew: '',
               confirm: '',
             },
-            isCollapse: false
+            isCollapse: false,
+            changePwdRules: {
+              pwdOld: [{ required: true, trigger: 'blur', validator: validatePwdOld }],
+              pwdNew: [{ required: true, trigger: 'blur', validator: validatePwdNew }],
+              confirm: [{ required: true, trigger: 'blur', validator: validateConfirm }]
+            }
         };
     },
 
@@ -105,28 +135,56 @@ export default {
                     type: 'warning'
                 }
             ).then(() => {
-                this.$request('logout').then(res => {
-                    if (res.data.returnCode == 0) {
-                        this.$message({
-                            message: '退出成功',
-                            center: true,
-                            type: 'success'
-                        });
-                        this.$router.push('/login');
-                    } else {
-                        this.$message({
-                            message: res.data.returnMsg,
-                            center: true,
-                            type: 'error'
-                        });
-                    }
-                });
+                // this.$request('logout').then(res => {
+                //     if (res.data.returnCode == 0) {
+                //         this.$message({
+                //             message: '退出成功',
+                //             center: true,
+                //             type: 'success'
+                //         });
+                //         this.$router.push('/login');
+                //     } else {
+                //         this.$message({
+                //             message: res.data.returnMsg,
+                //             center: true,
+                //             type: 'error'
+                //         });
+                //     }
+                // });
                 localStorage.removeItem('HTTP_ACCESS_TOKEN');
                 this.$router.push('/login');
             })
         },
         changePwd () {
-          this.dialogVisible = false
+            this.$confirm(
+                '确定要修改密码吗？',
+                '提醒',
+                {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }
+            ).then(() => {
+                // this.$request('change').then(res => {
+                //     if (res.data.returnCode == 0) {
+                //         this.$message({
+                //             message: '退出成功',
+                //             center: true,
+                //             type: 'success'
+                //         });
+                //         this.$router.push('/login');
+                //     } else {
+                //         this.$message({
+                //             message: res.data.returnMsg,
+                //             center: true,
+                //             type: 'error'
+                //         });
+                //     }
+                // });
+                this.dialogVisible = false
+                localStorage.removeItem('HTTP_ACCESS_TOKEN');
+                this.$router.push('/login');
+            })
         },
         toggleMenu () {
           this.isCollapse = !this.isCollapse;

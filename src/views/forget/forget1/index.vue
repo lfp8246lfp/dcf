@@ -1,8 +1,8 @@
 <template>
   <div>
     <h1>找回密码</h1>
-    <el-form ref="form" :model="form" :rules="registerRules" style="border-bottom:1px solid #eee">
-      <el-form-item prop="mob">
+    <el-form ref="form" :model="form" style="border-bottom:1px solid #eee">
+      <el-form-item>
         <h3>手机号</h3>
         <div class="ipt">
           <div class="icon">
@@ -11,7 +11,7 @@
           <input type="text" v-model="form.mob" placeholder="请输入手机号">
         </div>
       </el-form-item>
-      <el-form-item prop="msg">
+      <el-form-item>
         <h3>验证码</h3>
         <div class="ipt">
           <div class="icon">
@@ -22,7 +22,7 @@
         </div>
       </el-form-item>
       <el-form-item>
-        <el-button class="nextBtn" type="primary" @click="next">下一步</el-button>
+        <el-button class="nextBtn" type="primary" @click="nextStep">下一步</el-button>
       </el-form-item>
     </el-form>
     <p class="login">已有账号？<a href="/login">去登录</a></p>
@@ -31,36 +31,60 @@
 <script>
 export default {
   data () {
-    const validateUsername = (rule, value, callback) => {
-            if (!value.trim()) {
-                callback(new Error(this.$t('login.accountErr')));
-            } else {
-                callback();
-            }
-        };
-        const validatePassword = (rule, value, callback) => {
-            if (value.length < 3) {
-                callback(new Error(this.$t('login.passErr')));
-            } else {
-                callback();
-            }
-        };
-
     return {
-      registerRules: {
-                mob: [{ required: true, trigger: 'blur', validator: validateUsername }],
-                msg: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
       form: {
         mob: '',
         msg:''
-      }
+      },
+      authCode: ''
     };
   },
   methods: {
-        getMsg () {},
-        next () {
-          this.$router.push('/forget2')
+        getMsg () {
+          if (this.form.mob.trim()) {
+              let reg = /^1[3456789]\d{9}$/
+              if (reg.test(this.form.mob)) {
+                this.$request('sendMessage', {params: {phone: this.form.mob}}).then(res => {
+                    console.log(res)
+                    if (res.data.returnCode == 0) {
+                        this.$message({
+                          type: 'success',
+                          message: res.data.returnMsg
+                        })
+                        this.authCode = res.data.authCode
+                    }
+                })
+              } else {
+                this.$message({
+                  type: 'warning',
+                  message: '手机号格式错误，请重新输入'
+                })
+              }
+          } else {
+              this.$message({
+                    type: 'warning',
+                    message: '请输入手机号'
+              })
+          }
+        },
+        nextStep () {
+          if (this.form.msg.trim().length > 0) {
+              if (this.form.msg === this.authCode) {
+                sessionStorage.setItem('mob', this.form.mob)
+                sessionStorage.setItem('auth', this.authCode)
+                this.$router.push('/forget2')
+              } else {
+                this.$message({
+                    type: 'error',
+                    message: '验证码错误'
+                })
+              }
+          } else {
+              this.$message({
+                  type: 'error',
+                  message: '请填写验证码'
+              })
+          }
         },
     }
 }

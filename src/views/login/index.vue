@@ -1,8 +1,8 @@
 <template>
     <div>
       <h1>登录</h1>
-    <el-form ref="form" :model="form" :rules="loginRules" style="border-bottom:1px solid #eee">
-      <el-form-item prop="accountid">
+    <el-form ref="form" :model="form" style="border-bottom:1px solid #eee">
+      <el-form-item>
         <h3>手机号</h3>
         <div class="ipt">
           <div class="icon">
@@ -11,7 +11,7 @@
           <input type="text" v-model="form.accountid" placeholder="请输入手机号">
         </div>
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item>
         <h3>密码</h3>
         <div class="ipt">
           <div class="icon">
@@ -36,25 +36,7 @@
 
 export default {
     data () {
-        const validateUsername = (rule, value, callback) => {
-            if (!value.trim()) {
-                callback(new Error('请输入手机号'));
-            } else {
-                callback();
-            }
-        };
-        const validatePassword = (rule, value, callback) => {
-            if (value.length < 3) {
-                callback(new Error('密码长度错误'));
-            } else {
-                callback();
-            }
-        };
         return {
-            loginRules: {
-                accountid: [{ required: true, trigger: 'blur', validator: validateUsername }],
-                password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-            },
             loading: false,
             form: {
                 accountid: '',
@@ -65,9 +47,9 @@ export default {
     },
     methods: {
         login () {
-            this.$refs.form.validate(valid => {
-                if (valid) {
-                    this.loading = true
+            // this.$refs.form.validate(valid => {
+            //     if (valid) {
+                    // this.loading = true
                     this.$request('login', this.form).then(res => {
                       console.log(res)
                         if (res.data.success == "1") {
@@ -86,10 +68,10 @@ export default {
                                 type: 'error'
                             });
                         }
-                        this.loading = false;
+                        // this.loading = false;
                     });
-                }
-            });
+            //     }
+            // });
         },
     }
 };

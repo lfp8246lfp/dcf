@@ -41,18 +41,16 @@
     <el-row :gutter="30">
       <el-col :span="8">
         <el-card style="height:400px">
+          <h3 style="font-size:18px;">设备分类统计</h3>
           <div class="chart" style="position:relative">
             <div id="ring">
-            </div>
-            <div class="total">
-              <h3 style="font-size:28px">{{total}}</h3>
-              <p style="font-size:14px;color:rgb(164,164,164)">总设备数</p>
             </div>
           </div>
         </el-card>
       </el-col>
       <el-col :span="16">
-        <el-card style="height:400px">
+        <el-card style="height:400px;position:relative">
+          <h3 class="title" style="position:absolute;left:30px;top:20px;font-size:18px;">近30天收益统计</h3>
           <el-tabs v-model="active" @tab-click="handleClick">
             <el-tab-pane label="合计" name="type">
               <div id="type"></div>
@@ -158,20 +156,24 @@ export default {
       }
     };
   },
-  computed: {
-    total() {
-      // let arr = this.deviceData.map(item => item.value)
-      // return arr.reduce((pre,next) => pre + next)
-      return this.homeData.wifinum + this.homeData.watermeter + this.homeData.chargingnum + this.homeData.temporary
-    }
-  },
   methods:{
-
     drawRing(id) {
         this.chart = echarts.init(document.getElementById(id))
         this.chart.setOption({
           title: {
-            text: '设备分类统计'
+            text: this.homeData.allDevCount,
+            subtext: '总设备数',
+            x: 'center',
+            y: 'center',
+            textStyle: {
+              fontSize: 28,
+              fontweight: 'normal'
+            },
+            subtextStyle: {
+              fontSize: 14,
+              color: 'rgb(164,164,164)'
+            },
+            itemGap: 0
           },
           legend: {
             y: 'bottom',
@@ -292,20 +294,17 @@ export default {
   mounted() {
     this.getHomeData()
     this.getLast30Days('type')
+    window.onresize = function (e) {
+      console.log(e)
+    }
   }
 }
 </script>
 <style lang='scss' scoped>
   [id] {
     width: 100%;
-    height: 350px;
-  }
-  .total {
-    position:absolute;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    text-align:center;
+    height: 5.5rem;
+    // height: 350px;
   }
   .list {
     display: flex;
@@ -386,6 +385,9 @@ export default {
       }  
       /deep/ .el-tabs__nav {
         float: right;
+      }
+      /deep/ .el-tabs__item {
+        padding: 0 10px;
       }
   }
 

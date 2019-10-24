@@ -10,4 +10,20 @@ export default [
         method: 'post',
         url: http + '/service/authservice/AuthService/getMenu'
     },
+    {
+        name: 'sendMessage',
+        method: 'get',
+        url: http + '/service/archivesservice/WeiXinService/sendMessageCode'
+    },
+    {
+        name: 'findPassword',
+        method: 'post',
+        url: http + '/service/authservice/PropertyManageService/findPassword'
+    },
+    {
+        name: 'register',
+        method: 'post',
+        url: http + '/service/authservice/PropertyManageService/register'
+    },
+
 ];
