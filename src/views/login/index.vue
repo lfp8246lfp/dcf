@@ -42,7 +42,8 @@ export default {
                 accountid: '',
                 password: ''
             },
-            remember: false
+            remember: false,
+
         };
     },
     methods: {

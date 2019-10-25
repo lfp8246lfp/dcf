@@ -158,16 +158,23 @@ export default {
   },
   methods:{
     drawRing(id) {
-        this.chart = echarts.init(document.getElementById(id))
-        this.chart.setOption({
+        let names = ['WIFI电表','WIFI水表','充电桩','临时充电设备']
+        let datas = [this.homeData.wifinum, this.homeData.watermeter, this.homeData.chargingnum, this.homeData.temporary]
+        let total = this.homeData.allDevCount
+
+        let myChart = echarts.init(document.getElementById(id))
+        myChart.setOption({
           title: {
             text: this.homeData.allDevCount,
             subtext: '总设备数',
             x: 'center',
-            y: 'center',
+            y: '35%',
             textStyle: {
               fontSize: 28,
-              fontweight: 'normal'
+              fontweight: 'normal',
+            },
+            grid: {
+              top: '10%',
             },
             subtextStyle: {
               fontSize: 14,
@@ -177,11 +184,35 @@ export default {
           },
           legend: {
             y: 'bottom',
-            data:['WIFI电表','WIFI水表','充电桩','临时充电设备'],
+            data: ['WIFI电表','WIFI水表','充电桩','临时充电设备'],
             itemWidth: 14,
             itemHeight: 14,
+            itemGap: 30,
             textStyle: {
-              fontSize: 14
+              lineHeight: 24,
+              rich: {
+                a: {
+                  fontSize: 12,
+                  color: 'rgb(164,164,164)',
+                },
+                b: {
+                  fontSize: 24,
+                  color: 'rgb(44,52,69)',
+                },
+                c: {
+                  fontSize: 14,
+                  color: 'rgb(103,110,120)',
+                }
+              }
+            },
+            
+            formatter: name => {
+              let data = datas[names.findIndex(item => item === name)]
+
+              let a = '{a|' + name + '}'
+              let b = '{b|' + (data / total * 100).toFixed(2) + '%}'
+              let c = '{c|' + data + '}'
+              return [a, b, c].join('\n')
             }
           },
           series: [
@@ -189,10 +220,12 @@ export default {
               name:'访问来源',
               type:'pie',
               radius: ['40%', '50%'],
+              center: ['50%', '40%'],
               avoidLabelOverlap: true,
               label: {
                 normal: {
                   formatter: '{b} \n {d}% \n {c}',
+                  show: false
                 }
               },
               data: [
@@ -205,6 +238,9 @@ export default {
             }
           ]
         })
+
+
+        window.onresize = () => myChart.resize()
     },
 
     handleClick(e) {
@@ -229,8 +265,8 @@ export default {
     },
 
     drawBars(id) {
-      this.chart = echarts.init(document.getElementById(id))
-      this.chart.setOption({
+      let myChart = echarts.init(document.getElementById(id))
+      myChart.setOption({
             color: ['#3398DB'],
             grid: {
               left: 30,
@@ -270,14 +306,16 @@ export default {
                 }
             ],
             series : [
-                {
-                    name:'income',
-                    type:'bar',
-                    barWidth: '30%',
-                    data:this.recentData.yAxis
-                }
+              {
+                name:'income',
+                type:'bar',
+                barWidth: '30%',
+                data:this.recentData.yAxis
+              }
             ]
       })
+
+      window.onresize = () => myChart.resize()
     },
 
     getHomeData() {
@@ -294,9 +332,6 @@ export default {
   mounted() {
     this.getHomeData()
     this.getLast30Days('type')
-    window.onresize = function (e) {
-      console.log(e)
-    }
   }
 }
 </script>
