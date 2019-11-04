@@ -15,18 +15,26 @@
               </el-date-picker>
               <el-button type="primary" icon="el-icon-search" @click="getRevenue()"></el-button>
             </div>
-            <div class="shortcut">
-              <el-button @click="dateShortcut()">近一周</el-button>
-              <el-button @click="dateShortcut(1)">近一个月</el-button>
-              <el-button @click="dateShortcut(3)">近三个月</el-button>
-            </div>
+            <el-row class="shortcut" :gutter="20">
+                <el-col :span="8">
+                  <el-button @click="dateShortcut()">近一周</el-button>
+                </el-col>
+                <el-col :span="8">
+                  <el-button @click="dateShortcut(1)">近一个月</el-button>
+                </el-col>
+                <el-col :span="8">
+                  <el-button @click="dateShortcut(3)">近三个月</el-button>
+                </el-col>
+            </el-row>
           </div>
 
           <div class="type">
             <h3>收入类型</h3>
-            <div class="typeTabs">
-              <el-button v-for="item in typeData" :key="item" @click="tabClick(item)">{{item | typeFilter}}</el-button>
-            </div>
+            <el-row class="typeTabs" :gutter="20">
+              <el-col :span="8" v-for="item in typeData" :key="item">
+                <el-button @click="tabClick(item)">{{item | typeFilter}}</el-button>
+              </el-col>
+            </el-row>
           </div>
       </el-card>
 
@@ -85,7 +93,7 @@ export default {
   data () {
     return {
       date: [new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()],
-      typeData: [0,3,6,1,7,8,9,10,11],
+      typeData: [0,3,1],
       type: 0,
       tableData: [],
       pageParams: {
@@ -215,14 +223,15 @@ export default {
           }
         }
         .shortcut {
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
+          // display: flex;
+          // justify-content: space-between;
+          // flex-wrap: wrap;
+          margin-top: 0.3rem;
           .el-button {
-            width: 100px;
+            // width: 100px;
+            width: 100%;
             height: 40px;
             padding: 0;
-            margin-top: 0.3rem;
             text-align: center;
             & + .el-button {
               margin-left: 0;
@@ -232,14 +241,16 @@ export default {
       }
       .type {
         .typeTabs {
-          display: flex;
-          justify-content: space-between;
-          flex-wrap: wrap;
+          // display: flex;
+          // justify-content: space-between;
+          // flex-wrap: wrap;
+          
           .el-button {
-            width: 100px;
+            // width: 100px;
+            width: 100%;
             height: 40px;
-            padding: 0;
             margin-bottom: 0.3rem;
+            padding: 0;
             text-align: center;
             & + .el-button {
               margin-left: 0;

@@ -1,43 +1,52 @@
 <template>
   <div>
-    <ul class="list">
-      <li>
-        <div class="left">
-          <span>￥{{homeData.totalMoney}}</span>
-          <p>累计总收入</p>
+    <el-row :gutter="30">
+      <el-col :span="6">
+        <div class="outline">
+          <div class="left">
+            <span>￥{{homeData.totalMoney}}</span>
+            <p>累计总收入</p>
+          </div>
+          <div class="right">
+            <img src="../../../static/images/income.png" alt="">
+          </div>
         </div>
-        <div class="right">
-          <img src="../../../static/images/income.png" alt="">
+      </el-col>
+      <el-col :span="6">
+        <div class="outline">
+          <div class="left">
+            <span>￥{{homeData.withdrawalBalance}}</span>
+            <p>可提现收入</p>
+          </div>
+          <div class="right">
+            <img src="../../../static/images/cash.png" alt="">
+          </div>
         </div>
-      </li>
-      <li>
-        <div class="left">
-          <span>￥{{homeData.withdrawalBalance}}</span>
-          <p>可提现收入</p>
+      </el-col>
+      <el-col :span="6">
+        <div class="outline">
+          <div class="left">
+            <span>{{homeData.allDevCount}}</span>
+            <p>设备总数</p>
+          </div>
+          <div class="right">
+            <img src="../../../static/images/device.png" alt="">
+          </div>
         </div>
-        <div class="right">
-          <img src="../../../static/images/cash.png" alt="">
+      </el-col>
+      <el-col :span="6">
+        <div class="outline">
+          <div class="left">
+            <span>{{homeData.onlinedev}}</span>
+            <p>在线设备数</p>
+          </div>
+          <div class="right">
+            <img src="../../../static/images/deviceOnline.png" alt="">
+          </div>
         </div>
-      </li>
-      <li>
-        <div class="left">
-          <span>{{homeData.allDevCount}}</span>
-          <p>设备总数</p>
-        </div>
-        <div class="right">
-          <img src="../../../static/images/device.png" alt="">
-        </div>
-      </li>
-      <li>
-        <div class="left">
-          <span>{{homeData.onlinedev}}</span>
-          <p>在线设备数</p>
-        </div>
-        <div class="right">
-          <img src="../../../static/images/deviceOnline.png" alt="">
-        </div>
-      </li>
-    </ul>
+      </el-col>
+    </el-row>
+      
     <el-row :gutter="30">
       <el-col :span="8">
         <el-card style="height:400px">
@@ -58,11 +67,11 @@
             <el-tab-pane label="WIFI电表" name="type3">
               <div id="type3"></div>
             </el-tab-pane>
-            <el-tab-pane label="WIFI水表" name="type6">
-              <div id="type6"></div>
-            </el-tab-pane>
             <el-tab-pane label="充电桩" name="type1">
               <div id="type1"></div>
+            </el-tab-pane>
+            <!-- <el-tab-pane label="WIFI水表" name="type6">
+              <div id="type6"></div>
             </el-tab-pane>
             <el-tab-pane label="临时充电设备" name="type7">
               <div id="type7"></div>
@@ -78,7 +87,7 @@
             </el-tab-pane>
             <el-tab-pane label="押金" name="type11">
               <div id="type11"></div>
-            </el-tab-pane>
+            </el-tab-pane> -->
           </el-tabs>
         </el-card>
       </el-col>
@@ -211,6 +220,9 @@ export default {
 
               let a = '{a|' + name + '}'
               let b = '{b|' + (data / total * 100).toFixed(2) + '%}'
+              if (total === 0) {
+                b = '{b|0%}'
+              }
               let c = '{c|' + data + '}'
               return [a, b, c].join('\n')
             }
@@ -255,7 +267,7 @@ export default {
         if (res.code === 200) {
           console.log('recentEarnings', res)
           this.recentData = {
-            xAxis: res.data.monthTranctions.map(item => item.date),
+            xAxis: res.data.monthTranctions.map(item => item.date.slice(5)),
             yAxis: res.data.monthTranctions.map(item => item.money)
           }
         }
@@ -341,52 +353,58 @@ export default {
     height: 5.5rem;
     // height: 350px;
   }
-  .list {
-    display: flex;
-    justify-content: space-between;
+  .el-row {
     margin-bottom: 30px;
-    li {
-      display: flex;
-      width: 375px;
-      height: 120px;
-      color: #fff;
-      border-radius: 3px;
-      &:first-of-type {
-        background: -webkit-linear-gradient(left, rgb(0,46,142), rgb(36,95,185));
-      }
-      &:nth-of-type(2) {
-        background: -webkit-linear-gradient(left, rgb(39,97,187), rgb(61,121,205));
-      }
-      &:nth-of-type(3) {
-        background: -webkit-linear-gradient(left, rgb(65,122,206), rgb(90,144,223));
-      }
-      &:last-of-type {
-        background: -webkit-linear-gradient(left, rgb(92,147,225), rgb(128,180,250));
-      }
-      .left {
-        flex: 1;
-        padding: 20px 0 0 30px;
-        span {
-          font-size: 28px;
-          font-weight: 700;
+    .el-col {
+      .outline {
+        display: flex;
+        height: 120px;
+        color: #fff;
+        border-radius: 3px;
+        .left {
+          flex: 1;
+          padding: 20px 0 0 30px;
+          span {
+            font-size: 28px;
+            font-weight: 700;
+          }
+          p {
+            margin-top: 10px;
+            font-size: 18px;
+          }
         }
-        p {
-          margin-top: 10px;
-          font-size: 18px;
+        .right {
+          flex: 1;
+          text-align: right;
+          img {
+            margin: 36px 36px 0 0;
+          }
         }
       }
-      .right {
-        flex: 1;
-        text-align: right;
-        img {
-          margin: 36px 36px 0 0;
+      &:first-child {
+        .outline {
+          background: -webkit-linear-gradient(left, rgb(0,46,142), rgb(36,95,185));
+        }
+      }
+      &:nth-child(2) {
+        .outline {
+          background: -webkit-linear-gradient(left, rgb(39,97,187), rgb(61,121,205));
+        }
+      }
+      &:nth-child(3) {
+        .outline {
+          background: -webkit-linear-gradient(left, rgb(65,122,206), rgb(90,144,223));
+        }
+      }
+      &:last-child {
+        .outline {
+          background: -webkit-linear-gradient(left, rgb(92,147,225), rgb(128,180,250));
         }
       }
     }
   }
-  .el-row {
-    margin-bottom: 30px;
-  }
+
+
   .electricity, .water {
     li {
       flex: 1;

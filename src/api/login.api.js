@@ -25,5 +25,10 @@ export default [
         method: 'post',
         url: http + '/service/authservice/PropertyManageService/register'
     },
+    {
+        name: 'updatePassword',
+        method: 'post',
+        url: http + '/service/authservice/AuthService/updatePassword'
+    },
 
 ];

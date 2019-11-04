@@ -5,7 +5,8 @@
       <el-date-picker
         v-model="month"
         type="month"
-        :placeholder="monthFormat">
+        :placeholder="monthComputed"
+        @change="monthChange">
       </el-date-picker>
     </el-card>
 
@@ -24,6 +25,8 @@
               <div class="info">
                 <h3>{{item.disc}}收益</h3>
                 <p v-if="item.Detail">￥{{item.money}}</p>
+                <p v-else-if="item.disc === '充电桩'">￥0</p>
+                <p v-else-if="item.disc === 'wifi表'">￥0</p>
                 <p v-else>未开通服务</p>
               </div>
             </li>
@@ -54,7 +57,9 @@ export default {
   },
   methods:{
     getIncomeDate() {
-      this.$request('billManage',{params: {billMonth: this.month.getMonth() + 1}}).then(res => {
+      let billMonth = this.monthFormat(this.month)
+      // let billMonth = this.month.getFullYear() + '-' + (this.month.getMonth() + 1)
+      this.$request('billManage',{params: {billMonth}}).then(res => {
         console.log(res)
         this.income = res.data.items
       }).then(res => {
@@ -84,7 +89,7 @@ export default {
           },
           legend: {
             y: 'bottom',
-            data: this.income.filter(item => item.Detail).map(item => item.disc),
+            data: this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => item.disc),
             itemWidth: 14,
             itemHeight: 14,
             textStyle: {
@@ -101,16 +106,22 @@ export default {
                   formatter: '{b} \n {d}%',
                 }
               },
-              data: this.income.filter(item => item.Detail).map(item => ({value: item.money, name: item.disc})),
+              data: this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => ({value: item.money, name: item.disc})),
               color: ['rgb(82,184,252)','rgb(114,219,119)','rgb(253,177,91)','rgb(255,90,166)']
             }
           ]
         })
     },
+    monthFormat(month) {
+      return month.getFullYear() + '-' + (month.getMonth() + 1)
+    },
+    monthChange() {
+      this.getIncomeDate()
+    }
   
   },
   computed: {
-    monthFormat() {
+    monthComputed() {
       return this.month.getFullYear() + '-' + (this.month.getMonth() + 1)
     }
   }

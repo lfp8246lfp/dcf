@@ -49,7 +49,7 @@
         :visible.sync="dialogVisible"
         width="640px">
 
-        <el-form ref="form" :model="form" :rules="changePwdRules" label-width="190px">
+        <el-form ref="formRef" :model="form" :rules="changePwdRules" label-width="190px">
           <el-form-item label="当前密码" prop="pwdOld">
             <el-input v-model="form.pwdOld"></el-input>
           </el-form-item>
@@ -115,7 +115,7 @@ export default {
               pwdNew: '',
               confirm: '',
             },
-            isCollapse: false,
+            isCollapse: true,
             changePwdRules: {
               pwdOld: [{ required: true, trigger: 'blur', validator: validatePwdOld }],
               pwdNew: [{ required: true, trigger: 'blur', validator: validatePwdNew }],
@@ -135,24 +135,8 @@ export default {
                     type: 'warning'
                 }
             ).then(() => {
-                // this.$request('logout').then(res => {
-                //     if (res.data.returnCode == 0) {
-                //         this.$message({
-                //             message: '退出成功',
-                //             center: true,
-                //             type: 'success'
-                //         });
-                //         this.$router.push('/login');
-                //     } else {
-                //         this.$message({
-                //             message: res.data.returnMsg,
-                //             center: true,
-                //             type: 'error'
-                //         });
-                //     }
-                // });
-                localStorage.removeItem('HTTP_ACCESS_TOKEN');
-                this.$router.push('/login');
+                localStorage.removeItem('HTTP_ACCESS_TOKEN')
+                this.$router.push('/login')
             })
         },
         changePwd () {
@@ -165,25 +149,20 @@ export default {
                     type: 'warning'
                 }
             ).then(() => {
-                // this.$request('change').then(res => {
-                //     if (res.data.returnCode == 0) {
-                //         this.$message({
-                //             message: '退出成功',
-                //             center: true,
-                //             type: 'success'
-                //         });
-                //         this.$router.push('/login');
-                //     } else {
-                //         this.$message({
-                //             message: res.data.returnMsg,
-                //             center: true,
-                //             type: 'error'
-                //         });
-                //     }
-                // });
-                this.dialogVisible = false
-                localStorage.removeItem('HTTP_ACCESS_TOKEN');
-                this.$router.push('/login');
+                this.$refs.formRef.validate(valid => {
+                  if (!valid) return
+                  this.$request('updatePassword', {oldpassword: this.form.pwdOld, newpassword: this.form.pwdNew}).then(res => {
+                    console.log('修改密码', res)
+                    if (res.data.returnCode === 1) {
+                      this.$message.success(res.data.returnMsg)
+                      this.dialogVisible = false
+                      localStorage.removeItem('HTTP_ACCESS_TOKEN')
+                      this.$router.push('/login')
+                    } else {
+                      this.$message.error(res.data.returnMsg)
+                    }
+                  })
+                })
             })
         },
         toggleMenu () {

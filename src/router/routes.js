@@ -74,7 +74,7 @@ const routes = [
                 component: resolve => require(['views/billManage'], resolve),
                 meta: {
                     activeMenu: '/billmanage',
-                    title: '用能统计',
+                    title: '账单管理',
                     noCache: true,
                     affix: false
                 }
@@ -85,18 +85,40 @@ const routes = [
                 component: resolve => require(['views/valueAddService'], resolve),
                 meta: {
                     activeMenu: '/valueaddservice',
-                    title: '用能统计',
+                    title: '增值服务',
                     noCache: true,
                     affix: false
                 }
             },
             {
                 name: 'priceManage',
-                path: '/priceManage',
+                path: '/pricemanage',
                 component: resolve => require(['views/priceManage'], resolve),
                 meta: {
-                    activeMenu: '/priceManage',
-                    title: '用能统计',
+                    activeMenu: '/pricemanage',
+                    title: '价格管理',
+                    noCache: true,
+                    affix: false
+                }
+            },
+            {
+                name: 'manageUnit',
+                path: '/manageunit',
+                component: resolve => require(['views/manageUnit'], resolve),
+                meta: {
+                    activeMenu: '/manageunit',
+                    title: '管理单位',
+                    noCache: true,
+                    affix: false
+                }
+            },
+            {
+                name: 'withdrawManage',
+                path: '/withdrawmanage',
+                component: resolve => require(['views/withdrawManage'], resolve),
+                meta: {
+                    activeMenu: '/withdrawmanage',
+                    title: '提现管理',
                     noCache: true,
                     affix: false
                 }

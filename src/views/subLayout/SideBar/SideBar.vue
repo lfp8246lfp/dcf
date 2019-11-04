@@ -1,11 +1,11 @@
 <template>
   <el-aside width="50px;" class="el-aside">
     <el-menu
-      :default-active="activeMenu"
+      default-active="index"
       :unique-opened="true"
       background-color="#20252B"
       text-color="rgb(179,181,182)"
-      active-text-color="#fff"
+      active-text-color="#b3b5b6"
       :collapse="isCollapse"
       class="el-menu-vertical-demo"
       :router="true">
@@ -89,8 +89,11 @@ export default {
           case 'pricemanage':
             return '价格管理';
             break;
-          case 'operationmanagement':
-            return '物业管理平台';
+          case 'manageunit':
+            return '管理单位';
+            break;
+          case 'withdrawmanage':
+            return '提现管理';
             break;
         }
       }
@@ -102,20 +105,12 @@ export default {
 <style lang="scss" scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 240px;
-  // min-height: 92.5vh;
 }
 .el-aside {
   height: 100%;
   background-color: #20252B;
   padding-top: 30px;
   box-sizing: border-box;
-}
-.el-menu {
-  border-right: none;
-}
-.el-submenu__title {
-  background-color: #20252B;
-  color:#B4B6B7;
 }
 .el-menu-item {
   font-size: 14px;
@@ -124,60 +119,14 @@ export default {
   padding-left: 14px;
   box-sizing: border-box;
   i {
-    margin-right: 10px;
+    margin-left: -5px;
   }
 }
-.el-menu-item:hover {
-  background-color: #0D141B!important; 
+.is-active {
+  border-left: 2px solid rgb(45, 134,225);
+  background-color: rgb(32,36,38);
 }
-.el-menu-item:active {
-  background-color: #0D141B!important; 
-  border-left: 4px solid rgb(45,134,225);
-}
-.active{
-     background:#0D141B;
-  }
-
-
-</style>
-<style lang="scss">
-  .el-menu--popup {
-  padding: 0px!important;
-}
-
-.el-submenu .el-menu-item {
-  height: 40px;
-  line-height: 40px;
-  padding-left: 14px;
-}
-.el-menu .el-menu--inline {
-    .el-submenu {
-        .el-submenu__title {
-            padding-left: 40px!important;
-        }
-   }
-}
-
-.el-submenu__title {
-   font-size: 14px!important;
-    padding: 0  20px!important; 
-//    text-align: center;
-}
-.el-menu-item, .el-submenu__title {
-  height: 40px!important;
-  line-height: 40px!important;
-//   padding-left: 40px!important; 
-}
-
-.el-menu--collapse {
-    width: 60px!important;
-    // text-align: center;
-}
-.fa {
-    width: 16px;
-    height: 16px;
-}
-// .el-tooltip {
-//     padding: 0  14px!important; 
+// .active{
+//   background:#0D141B;
 // }
 </style>
