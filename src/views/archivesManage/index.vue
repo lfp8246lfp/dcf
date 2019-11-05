@@ -1,6 +1,6 @@
 <template>
   <div id="archivesManage">
-    <el-tabs v-model="active" type="card">
+    <el-tabs v-model="active" type="card" @tab-click="handleClick">
       <el-tab-pane label="单位管理" name="first">
         <div id="manageUnit">
           <h2>单位列表</h2>
@@ -10,7 +10,7 @@
                 <button class="el-icon-upload2"> 导出</button>
               </div>
               <div class="filter">
-                <el-input placeholder="搜索房间" v-model="ListParams.search"></el-input>
+                <el-input placeholder="搜索房间" v-model="listParams.search"></el-input>
                 <el-button type="primary" class="el-icon-search" size="mini" @click="getList"></el-button>
               </div>
             </div>
@@ -304,7 +304,7 @@ export default {
       tableData: [],
       total: 0,
       total1: 0,
-      ListParams: {
+      listParams: {
         search: '',
         pageNum: 1,
         pageSize: 10
@@ -373,7 +373,7 @@ export default {
 
   methods:{
     getList() {
-      this.$request('getUnitList', {params: this.ListParams}).then(res => {
+      this.$request('getUnitList', {params: this.listParams}).then(res => {
         console.log('单位列表数据', res)
         if (res.code === 200) {
           this.tableData = res.data.items
@@ -392,11 +392,11 @@ export default {
     },
     handleSizeChange1(size) {
       this.roomPageParams.pageSize = size
-      this.openRoomDevices()
+      this.openRoomDevices(this.id)
     },
     handleCurrentChange1(page) {
       this.roomPageParams.pageNum = page
-      this.openRoomDevices()
+      this.openRoomDevices(this.id)
     },
 
     getMapData() {
@@ -417,6 +417,7 @@ export default {
     chooseA() {},
 
     openDialog(optype, row) {
+        this.getMapData()
         if (optype === 1) {
           this.optype = 1
           this.form.roomname = ''
@@ -509,6 +510,7 @@ export default {
                 type: 'success',
                 message: '删除成功'
               })
+              this.getList()
             } else {
               this.$message({
                 type: 'error',
@@ -516,7 +518,6 @@ export default {
               })
             }
           })
-          this.getList()
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -711,11 +712,17 @@ export default {
     handleCurrentChange2(page) {
       this.chargePageParams.pageNum = page
       this.getChargeData()
+    },
+    handleClick(e) {
+      if (e.name === 'first') {
+        this.getList()
+      } else {
+        this.getChargeData()
+      }
     }
   },
   mounted() {
     this.getList()
-    this.getMapData()
     this.getChargeData()
   }
 }

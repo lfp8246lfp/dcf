@@ -93,7 +93,7 @@ export default {
   data () {
     return {
       date: [new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()],
-      typeData: [0,3,1],
+      typeData: [0,3,2],
       type: 0,
       tableData: [],
       pageParams: {
@@ -112,7 +112,7 @@ export default {
         case 3:
           return 'WIFI电表';
           break;
-        case 1:
+        case 2:
           return '充电站';
           break;
         case 6:

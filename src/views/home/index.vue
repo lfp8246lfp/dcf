@@ -67,8 +67,8 @@
             <el-tab-pane label="WIFI电表" name="type3">
               <div id="type3"></div>
             </el-tab-pane>
-            <el-tab-pane label="充电桩" name="type1">
-              <div id="type1"></div>
+            <el-tab-pane label="充电桩" name="type2">
+              <div id="type2"></div>
             </el-tab-pane>
             <!-- <el-tab-pane label="WIFI水表" name="type6">
               <div id="type6"></div>

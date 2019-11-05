@@ -15,14 +15,9 @@ let arr = ['/login', '/register1', '/register2', '/register3', '/forget1', '/for
 // 路由权限控制
 router.beforeEach(async (to, from, next) => {
     if (arr.includes(to.path)) {
-        next();
+        next()
     } else {
-        let token = localStorage.getItem('HTTP_ACCESS_TOKEN');
-        // if (token == undefined) {
-        //     next('/enter');
-        // } else {
-        //     next();
-        // }
+        let token = localStorage.getItem('HTTP_ACCESS_TOKEN')
         if (!token) return next('/enter')
         next()
     }

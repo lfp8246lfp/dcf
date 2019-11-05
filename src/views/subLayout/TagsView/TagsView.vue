@@ -150,7 +150,8 @@ export default {
       line-height: 28px;
       // border: 1px solid #303030;
       color: rgb(48,49,51);
-      background: rgb(247, 248, 250);
+      // background: rgb(247, 248, 250);
+      background: #cddded;
       padding: 0 28px;
       font-size: 14px;
       // margin-left: 5px;
