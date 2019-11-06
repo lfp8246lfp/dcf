@@ -65,7 +65,8 @@
             </el-table-column>
             <el-table-column
               prop="detailtype"
-              label="收入类型">
+              label="收入类型"
+              :formatter="formatter1">
             </el-table-column>
             <el-table-column
               prop="chatname"
@@ -138,13 +139,13 @@ export default {
   },
   methods:{
     dateShortcut(time) {
-      console.log(time)
+      // console.log(time)
       if (time) {
         this.date = [new Date(new Date().setMonth(new Date().getMonth() - time)), new Date()]
       } else {
         this.date = [new Date(+new Date() - 7*24*60*60*1000), new Date()]
       }
-      console.log(this.date)
+      // console.log(this.date)
       this.getRevenue()
     },
     tabClick(type) {
@@ -169,9 +170,9 @@ export default {
         type,
         ...this.pageParams
       }
-      console.log('收益统计参数', params)
+      // console.log('收益统计参数', params)
       this.$request('revenueStatistics', {params}).then(res => {
-        console.log('第一条:', JSON.stringify(res.data.items[0]), '\n数量:', res.data.items.length,'\n收益统计数据:', res.data)
+        console.log('收益统计数据:', res.data)
         if (res.code === 200) {
           this.tableData = res.data.items
           this.total = res.data.total
@@ -186,6 +187,37 @@ export default {
 
     formatter(row) {
       return this.dateFormat(new Date(row.transactionsdate))
+    },
+    formatter1(row) {
+      switch (row.detailtype) {
+        case 0:
+          return '全部';
+          break;
+        case 3:
+          return 'WIFI电表';
+          break;
+        case 2:
+          return '充电站';
+          break;
+        case 6:
+          return 'WIFI水表';
+          break;
+        case 7:
+          return '临时充电设备';
+          break;
+        case 8:
+          return '房租';
+          break;
+        case 9:
+          return '物业费';
+          break;
+        case 10:
+          return '燃气费';
+          break;
+        case 11:
+          return '押金';
+          break;
+      }
     }
   },
   mounted() {

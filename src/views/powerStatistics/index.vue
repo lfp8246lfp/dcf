@@ -2,7 +2,6 @@
   <div id="energyStatistics">
     <el-card>
       <h3>单位列表</h3>
-
       <div class="datePicker">
         <el-date-picker
           v-model="date"
@@ -14,12 +13,10 @@
         </el-date-picker>
         <el-button type="primary" icon="el-icon-search" @click="getPowerData"></el-button>
       </div>
-
       <el-button style="float:right;margin-bottom:20px;margin:-41px 20px 0;">
           <i class="fa fa-upload"></i>
           导出
       </el-button>
-
       <div class="table">
           <el-table
             :data="tableData"
@@ -183,13 +180,15 @@ export default {
       this.sendReq2()
     },
 
-    getPowerData(row) {
+    getPowerData() {
       let params = {
         beginAt: this.dateFormat(this.date[0]),
+        // beginAt: '2019-08-06 12:30:30',
         endAt: this.dateFormat(this.date[1]),
+        // endAt: '2019-11-06 12:30:30',
         ...this.pageParams
       }
-      console.log('用能统计参数',params)
+      // console.log('用能统计参数',params)
       this.$request('energyStatistics', {params}).then(res => {
         console.log('用能统计',res.data)
         this.tableData = res.data.items

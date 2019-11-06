@@ -12,7 +12,7 @@
 
     <div class="banner">
       <h2>总收益</h2>
-      <p>￥{{totalIncome}}</p>
+      <p>￥{{total}}</p>
     </div>
 
     <el-row :gutter="20">
@@ -48,8 +48,8 @@ export default {
   data () {
     return {
       month: new Date(),
-      totalIncome: 0,
-      income: []
+      income: [],
+      total: 0
     };
   },
   mounted() {
@@ -62,16 +62,16 @@ export default {
       this.$request('billManage',{params: {billMonth}}).then(res => {
         console.log(res)
         this.income = res.data.items
+        this.total = res.data.totalMoney
       }).then(res => {
         this.drawRing()
       })
     },
     drawRing() {
-        let total = this.income.filter(item => item.Detail).map(item => item.money).reduce((prev,next) => prev + next, 0)
         this.chart = echarts.init(document.getElementById('ring'))
         this.chart.setOption({
           title: {
-            text: '￥' + total,
+            text: '￥' + this.total,
             subtext: '总收入',
             x: 'center',
             y: 'center',
@@ -156,6 +156,7 @@ export default {
     text-align: center;
     color: #fff;
     background: url(../../../static/images/banner.png);
+    background-size: 100% 100%;
     border-radius: 5px;
     h2 {
       margin: 0 0 15px;

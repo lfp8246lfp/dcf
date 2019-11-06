@@ -31,8 +31,12 @@
                   <el-table-column
                     label="操作">
                     <template slot-scope="scope">
-                      <el-button size="mini" class="el-icon-edit" @click="openDialog(2, scope.row)" :disabled="!!scope.row.totalused"></el-button>
-                      <el-button size="mini" class="el-icon-delete-solid" @click="deletePrice(scope.row)" :disabled="!!scope.row.totalused"></el-button>
+                      <el-tooltip effect="dark" content="编辑价格" placement="top-start">
+                        <el-button size="mini" class="el-icon-edit" @click="openDialog(2, scope.row)" :disabled="!!scope.row.totalused"></el-button>
+                      </el-tooltip>
+                      <el-tooltip effect="dark" content="删除价格" placement="top-start">
+                        <el-button size="mini" class="el-icon-delete-solid" @click="deletePrice(scope.row)" :disabled="!!scope.row.totalused"></el-button>
+                      </el-tooltip>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -58,7 +62,7 @@
               </el-form>
               <div slot="footer" class="dialog-footer">
                 <el-button @click="closeDialog">取 消</el-button>
-                <el-button type="primary" @click="editPrice(opttype)">确 定</el-button>
+                <el-button type="primary" @click="opttype === 1 ? addPrice() : editPrice()">确 定</el-button>
               </div>
             </el-dialog>
 
@@ -66,47 +70,50 @@
 
       <el-tab-pane label="充电桩电价" name="second">
           <h2 style="margin-bottom: 20px;">充电桩电价</h2>
-          <el-form :inline="true" :model="form2" style="background-color: rgb(251,251,251)" class="chargeForm" label-width="150px">
-            <el-form-item label="时长1（小时）">
-              <el-input v-model="form2.duration1"></el-input>
+          <el-form :inline="true" style="background-color: rgb(251,251,251)" class="chargeForm" label-width="150px" ref="chargeRef" :rules="formRules">
+            <el-form-item label="时长1（小时）" prop="hour1">
+              <el-input v-model="chargePrices[0].hour"></el-input>
             </el-form-item>
-            <el-form-item label="价格1（元）">
-              <el-input v-model="form2.price1"></el-input>
+            <el-form-item label="价格1（元）" prop="price1">
+              <el-input v-model="chargePrices[0].price"></el-input>
             </el-form-item>
-            <el-form-item label="时长2（小时）">
-              <el-input v-model="form2.duration2"></el-input>
+            <el-form-item label="时长2（小时）" prop="hour2">
+              <el-input v-model="chargePrices[1].hour"></el-input>
             </el-form-item>
-            <el-form-item label="价格2（元）">
-              <el-input v-model="form2.price2"></el-input>
+            <el-form-item label="价格2（元）" prop="price2">
+              <el-input v-model="chargePrices[1].price"></el-input>
             </el-form-item>
-            <el-form-item label="时长3（小时）">
-              <el-input v-model="form2.duration3"></el-input>
+            <el-form-item label="时长3（小时）" prop="hour3">
+              <el-input v-model="chargePrices[2].hour"></el-input>
             </el-form-item>
-            <el-form-item label="价格3（元）">
-              <el-input v-model="form2.price3"></el-input>
+            <el-form-item label="价格3（元）" prop="price3">
+              <el-input v-model="chargePrices[2].price"></el-input>
             </el-form-item>
-            <el-form-item label="时长4（小时）">
-              <el-input v-model="form2.duration4"></el-input>
+            <el-form-item label="时长4（小时）" prop="hour4">
+              <el-input v-model="chargePrices[3].hour"></el-input>
             </el-form-item>
-            <el-form-item label="价格4（元）">
-              <el-input v-model="form2.price4"></el-input>
+            <el-form-item label="价格4（元）" prop="price4">
+              <el-input v-model="chargePrices[3].price"></el-input>
             </el-form-item>
-            <el-form-item label="时长5（小时）">
-              <el-input v-model="form2.duration5"></el-input>
+            <el-form-item label="时长5（小时）" prop="hour5">
+              <el-input v-model="chargePrices[4].hour"></el-input>
             </el-form-item>
-            <el-form-item label="价格5（元）">
-              <el-input v-model="form2.price5"></el-input>
+            <el-form-item label="价格5（元）" prop="price5">
+              <el-input v-model="chargePrices[4].price"></el-input>
             </el-form-item>
-            <el-form-item label="时长6（小时）">
-              <el-input v-model="form2.duration6"></el-input>
+            <el-form-item label="时长6（小时）" prop="hour6">
+              <el-input v-model="chargePrices[5].hour"></el-input>
             </el-form-item>
-            <el-form-item label="价格6（元）">
-              <el-input v-model="form2.price6"></el-input>
+            <el-form-item label="价格6（元）" prop="price6">
+              <el-input v-model="chargePrices[5].price"></el-input>
             </el-form-item>
           </el-form>
           <div class="btns1">
-            <el-button type="primary" class="el-icon-plus"> 新增</el-button>
-            <el-button type="primary" class="el-icon-edit"> 编辑</el-button>
+            <el-button type="primary" class="el-icon-plus" @click="addCharge" v-if="btnVisible"> 新增</el-button>
+            <template v-else>
+              <el-button type="primary" class="el-icon-edit" @click="editCharge"> 编辑</el-button>
+              <el-button type="primary" class="el-icon-delete" @click="deleteCharge"> 删除</el-button>
+            </template>
           </div>
       </el-tab-pane>
     </el-tabs>
@@ -119,11 +126,19 @@
 <script>
 export default {
   data () {
+    const validate = (rule, value, callback) => {
+        if (value.trim()) {
+            return callback()
+        } else {
+            return callback(new Error('请输入完整的时长和价格'))
+        }
+    }
     return {
       active: 'first',
       tableData: [],
       total: 0,
-      pricePageParams: {
+      PageParams: {
+        appType: 3,
         pageNum: 1,
         pageSize: 10
       },
@@ -135,34 +150,43 @@ export default {
       opttype: 1,
       priceid: '',
       departmentid: '',
-      form2: {
-        durations1: '',
-        durations2: '',
-        durations3: '',
-        durations4: '',
-        durations5: '',
-        durations6: '',
-        price1: '',
-        price2: '',
-        price3: '',
-        price4: '',
-        price5: '',
-        price6: '',
+      chargePrices: [
+        {hour: '', price: ''},
+        {hour: '', price: ''},
+        {hour: '', price: ''},
+        {hour: '', price: ''},
+        {hour: '', price: ''},
+        {hour: '', price: ''},
+      ],
+      btnVisible: true,
+      formRules: {
+        hour1: [{ required: true, trigger: 'blur' }],
+        hour2: [{ required: true, trigger: 'blur' }],
+        hour3: [{ required: true, trigger: 'blur' }],
+        hour4: [{ required: true, trigger: 'blur' }],
+        hour5: [{ required: true, trigger: 'blur' }],
+        hour6: [{ required: true, trigger: 'blur' }],
+        price1: [{ required: true, trigger: 'blur' }],
+        price2: [{ required: true, trigger: 'blur' }],
+        price3: [{ required: true, trigger: 'blur' }],
+        price4: [{ required: true, trigger: 'blur' }],
+        price5: [{ required: true, trigger: 'blur' }],
+        price6: [{ required: true, trigger: 'blur' }]
       }
     };
   },
   methods:{
     handleSizeChange(size) {
-      this.pricePageParams.pageSize = size
+      this.PageParams.pageSize = size
       this.getElectricityPrice()
     },
     handleCurrentChange(page) {
-      this.pricePageParams.pageNum = page
+      this.PageParams.pageNum = page
       this.getElectricityPrice()
     },
 
     getElectricityPrice() {
-      this.$request('electricityPrice', {params: {appType: 3, ...this.pricePageParams}}).then(res => {
+      this.$request('electricityPrice', {params: this.PageParams}).then(res => {
         console.log('电表电价数据', res)
         if (res.data.returncode === 1) {
           this.tableData = res.data.items
@@ -185,41 +209,36 @@ export default {
       this.form.pricename = ''
       this.dialogFormVisible = false
     },
-    editPrice(opttype) {
+
+    addPrice() {
       this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
       }).then(() => {
           let obj = {
-            opttype,
+            opttype: 1,
             ...this.form
           }
-
-          if (opttype === 2) {
-            obj.priceid = this.priceid
-            obj.departmentid = this.departmentid
-          }
-
-          this.$request('optWifiPrice', obj).then(res => {
-            console.log('新建修改电价', res)
-            if (res.data.returncode === 1) {
-              this.dialogFormVisible = false
-              this.getElectricityPrice()
-              this.form.pricevalue = ''
-              this.form.pricename = ''
-              this.$message({
-                type: 'success',
-                message: '操作成功'
-              })
-            } else {
-              this.$message({
-                type: 'error',
-                message: '操作失败'
-              })
-            }
+          this.$refs.chargeRef.validate(valid => {
+            if (!valid) return
+            this.$request('optWifiPrice', obj).then(res => {
+              console.log('新建电价', res)
+              if (res.data.returncode === 1) {
+                this.dialogFormVisible = false
+                this.getElectricityPrice()
+                this.$message({
+                  type: 'success',
+                  message: '添加成功'
+                })
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: '添加失败'
+                })
+              }
+            })
           })
-
       }).catch(() => {
           this.$message({
             type: 'info',
@@ -227,6 +246,45 @@ export default {
           })       
       })
     },
+
+    editPrice() {
+      this.$confirm('是否继续操作', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+          let obj = {
+            opttype: 2,
+            priceid: this.priceid,
+            departmentid: this.departmentid,
+            ...this.form
+          }
+          this.$request('optWifiPrice', obj).then(res => {
+            console.log('修改电价', res)
+            if (res.data.returncode === 1) {
+              this.dialogFormVisible = false
+              this.getElectricityPrice()
+              this.form.pricevalue = ''
+              this.form.pricename = ''
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '修改失败'
+              })
+            }
+          })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })       
+      })
+    },
+    
     deletePrice(row) {
       this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
@@ -265,18 +323,102 @@ export default {
           })       
       })
 
-
     },
     formatter(row) {
       return row.totalused ? '已使用' : '未使用'
     },
 
-
     getCharingPrice() {
       this.$request('electricityPrice', {params: {appType: 1}}).then(res => {
         console.log('充电桩电价数据', res)
+        if (res.data.returncode === 1 && res.data.items.length > 0) {
+          this.chargePrices = res.data.items
+        }
+        this.btnVisible = !res.data.items.length
       })
-    }
+    },
+
+    addCharge() {
+      this.$confirm('是否继续操作', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+          let obj = {
+            opttype: 1,
+            item: this.chargePrices.map(item => ({hour: item.hour, price: item.price}))
+          }
+          this.$request('optCharingPrice', obj).then(res => {
+            console.log('新增充电桩电价', res)
+            if (res.data.returncode === 1) {
+              this.$message.success('新增成功')
+              this.getCharingPrice()
+            } else {
+              this.$message.error('新增失败')
+            }
+          })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })       
+      })
+
+    },
+    editCharge() {
+      this.$confirm('是否继续操作', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+          let obj = {
+            opttype: 2,
+            item: this.chargePrices
+          }
+          this.$request('optCharingPrice', obj).then(res => {
+            console.log('修改充电桩电价', res)
+            if (res.data.returncode === 1) {
+              this.$message.success('修改成功')
+              this.getCharingPrice()
+            } else {
+              this.$message.error('修改失败')
+            }
+          })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })       
+      })
+
+    },
+    deleteCharge() {
+      this.$confirm('是否继续操作', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+          let obj = {
+            opttype: 3,
+            item: this.chargePrices
+          }
+          this.$request('optCharingPrice', obj).then(res => {
+            console.log('删除充电桩电价', res)
+            if (res.data.returncode === 1) {
+              this.$message.success('删除成功')
+              this.chargePrices = this.chargePrices.map(item => ({hour: '', price: ''}))
+              this.getCharingPrice()
+            } else {
+              this.$message.error('删除失败')
+            }
+          })
+      }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })       
+      })
+    },
   },
   mounted() {
     this.getElectricityPrice()

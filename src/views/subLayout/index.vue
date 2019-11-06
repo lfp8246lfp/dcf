@@ -187,6 +187,7 @@ export default {
 }
 .el-header {
   background: url(../../../static/images/headerbg.png) no-repeat;
+  background-size: 100% 100%;
   color: #fff;
   height: 70px !important;
   line-height: 70px;

@@ -39,9 +39,7 @@
 
     <div class="withdrawDetail">
       <h3>提现记录</h3>
-
       <div class="data">
-
         <div class="datePicker">
           <el-date-picker
             v-model="date"
@@ -53,12 +51,10 @@
           </el-date-picker>
           <el-button type="primary" icon="el-icon-search" @click="getWithdrawDetail"></el-button>
         </div>
-
         <el-button style="float:right;margin-bottom:20px;margin:-41px 20px 0;">
             <i class="fa fa-upload"></i>
             导出
         </el-button>
-
         <div class="table">
           <el-table
             :data="tableData"
@@ -91,7 +87,6 @@
             </el-table-column>
           </el-table>
         </div>
-
         <div class="page">
           <el-pagination
             @size-change="handleSizeChange"
@@ -102,21 +97,19 @@
             :total="total">
           </el-pagination>
         </div>
-
       </div>
     </div>
-
-    <el-dialog title="新建提现申请" :visible.sync="dialogFormVisible">
-      <el-form :model="form" label-width="28%">
+    <el-dialog title="新建提现申请" :visible.sync="dialogFormVisible" @closed="closeDialog">
+      <el-form :model="form" :rules="addFormRules" ref="addRef" label-width="28%">
         <el-form-item label="提现方式">
           <el-select v-model="form.withdrawtype" disabled>
             <el-option v-for="item in withdrawTypes" :label="item.label" :value="item.value" :key="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="姓名">
+        <el-form-item label="姓名" prop="payid">
           <el-input v-model="form.payid"></el-input>
         </el-form-item>
-        <el-form-item label="提现金额">
+        <el-form-item label="提现金额" prop="rechargevalue">
           <el-input v-model="form.rechargevalue"></el-input>
         </el-form-item>
         <el-form-item label="请注意：">
@@ -139,6 +132,13 @@
 <script>
 export default {
   data () {
+    const validate = (rule, value, callback) => {
+        if (value.trim()) {
+            return callback()
+        } else {
+            return callback(new Error('请输入姓名和提现金额'))
+        }
+    }
     return {
       withdrawData: {
         totalMoney: 0,
@@ -164,7 +164,8 @@ export default {
         {label: '微信钱包', value: 3},
       ],
       addFormRules: {
-
+        payid: [{ validator: validate }],
+        rechargevalue: [{ validator: validate }]
       }
     };
   },
@@ -186,13 +187,18 @@ export default {
         }
       })
     },
+    closeDialog() {
+      this.form.payid = ''
+      this.form.rechargevalue = ''
+    },
     addWithdraw() {
         this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          if (this.form.payid.trim()) {
+          this.$refs.addRef.validate(valid => {
+            if (!valid) return
             this.$request('addWithdrawLog', this.form).then(res => {
               console.log('提现申请', res)
               if (res.data.returnCode === 1) {
@@ -202,30 +208,44 @@ export default {
                 })
                 this.dialogFormVisible = false
                 this.getWithdrawDetail()
-                this.form.payid = ''
-                this.form.rechargevalue = ''
               } else {
-                if (!this.form.rechargevalue.trim()) {
-                  this.$message({
-                    type: 'error',
-                    message: '请填写金额'
-                  })
-                } else {
-                  this.$message({
-                    type: 'error',
-                    message: '申请失败'
-                  })
-                }
-
+                this.$message({
+                  type: 'error',
+                  message: '申请失败'
+                })
               }
             })
-          } else {
-            this.$message({
-              type: 'error',
-              message: '请填写姓名'
-            })
-          }
-          
+          })
+          // if (this.form.payid.trim()) {
+          //   this.$request('addWithdrawLog', this.form).then(res => {
+          //     console.log('提现申请', res)
+          //     if (res.data.returnCode === 1) {
+          //       this.$message({
+          //         type: 'success',
+          //         message: '申请成功'
+          //       })
+          //       this.dialogFormVisible = false
+          //       this.getWithdrawDetail()
+          //     } else {
+          //       if (!this.form.rechargevalue.trim()) {
+          //         this.$message({
+          //           type: 'error',
+          //           message: '请填写金额'
+          //         })
+          //       } else {
+          //         this.$message({
+          //           type: 'error',
+          //           message: '申请失败'
+          //         })
+          //       }
+          //     }
+          //   })
+          // } else {
+          //   this.$message({
+          //     type: 'error',
+          //     message: '请填写姓名'
+          //   })
+          // }
         }).catch(() => {
           this.$message({
             type: 'info',
