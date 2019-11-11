@@ -12,7 +12,7 @@ export default [
     },
     {
         name: 'sendMessage',
-        method: 'get',
+        method: 'post',
         url: http + '/service/archivesservice/WeiXinService/sendMessageCode'
     },
     {

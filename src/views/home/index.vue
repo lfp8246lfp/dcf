@@ -331,7 +331,7 @@ export default {
     },
 
     getHomeData() {
-      this.$request('homeData', {params: {HTTP_ACCESS_TOKEN: localStorage.getItem('HTTP_ACCESS_TOKEN')}}).then(res => {
+      this.$request('homeData').then(res => {
         console.log('homeData', res)
         if (res.code === 200) {
           this.homeData = res.data
