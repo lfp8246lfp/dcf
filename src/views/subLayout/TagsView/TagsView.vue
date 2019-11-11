@@ -153,6 +153,7 @@ export default {
       // background: rgb(247, 248, 250);
       background: #cddded;
       padding: 0 28px;
+      margin-right: 5px;
       font-size: 14px;
       // margin-left: 5px;
       &:first-of-type {

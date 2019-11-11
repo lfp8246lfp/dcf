@@ -98,19 +98,19 @@
         <el-card>
           <ul style="display:flex;" class="electricity">
             <li>
-              <img src="../../../static/images/totalElectricity.png" alt="">
-              <p>总用电量</p>
-              <span>{{homeData.totalelectricity}}kWh</span>
+              <img src="../../../static/images/incomeFullYear.png" alt="">
+              <p>年收入</p>
+              <span>￥{{homeData.yearMoney}}</span>
             </li>
             <li>
-              <img src="../../../static/images/thisElectricity.png" alt="">
-              <p>本月耗电量</p>
-              <span>{{homeData.Monthelectricity}}kWh</span>
+              <img src="../../../static/images/incomeThisMonth.png" alt="">
+              <p>本月收入</p>
+              <span>￥{{homeData.thisMonthMoney}}</span>
             </li>
             <li>
-              <img src="../../../static/images/lastElectricity.png" alt="">
-              <p>上月耗电量</p>
-              <span>{{homeData.lastMonthElectricity}}kWh</span>
+              <img src="../../../static/images/incomeLastMonth.png" alt="">
+              <p>上月收入</p>
+              <span>￥{{homeData.lastMonthMoney}}</span>
             </li>
           </ul>
         </el-card>
@@ -119,19 +119,19 @@
         <el-card>
           <ul style="display:flex;" class="water">
             <li>
-              <img src="../../../static/images/totalWater.png" alt="">
-              <p>总用水量</p>
-              <span>{{homeData.totalWater}}t</span>
+              <img src="../../../static/images/userTotal.png" alt="">
+              <p>用户数</p>
+              <span>{{homeData.usernum}}</span>
             </li>
             <li>
-              <img src="../../../static/images/thisWater.png" alt="">
-              <p>本月用水量</p>
-              <span>{{homeData.MonthWater}}t</span>
+              <img src="../../../static/images/userNormal.png" alt="">
+              <p>正常用户数</p>
+              <span>{{homeData.normalnum}}</span>
             </li>
             <li>
-              <img src="../../../static/images/lastWater.png" alt="">
-              <p>上月用水量</p>
-              <span>{{homeData.lastMonthWater}}t</span>
+              <img src="../../../static/images/userError.png" alt="">
+              <p>告警用户数</p>
+              <span>{{homeData.alarmnum}}</span>
             </li>
           </ul>
         </el-card>

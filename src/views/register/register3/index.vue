@@ -32,6 +32,7 @@ export default {
 <style lang='scss' scoped>
 #success {
   height: 7.5rem;
+  padding-bottom: 50px;
   text-align: center;
   .successImg {
     margin: 2.1rem 0 0.7rem;

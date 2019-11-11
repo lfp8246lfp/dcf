@@ -26,7 +26,7 @@
                 <h3>{{item.disc}}收益</h3>
                 <p v-if="item.Detail">￥{{item.money}}</p>
                 <p v-else-if="item.disc === '充电桩'">￥0</p>
-                <p v-else-if="item.disc === 'wifi表'">￥0</p>
+                <p v-else-if="item.disc === 'WIFI表'">￥0</p>
                 <p v-else>未开通服务</p>
               </div>
             </li>
@@ -68,6 +68,8 @@ export default {
       })
     },
     drawRing() {
+        let discData = this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => item.disc)
+        let valueData = this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => ({value: item.money, name: item.disc}))
         this.chart = echarts.init(document.getElementById('ring'))
         this.chart.setOption({
           title: {
@@ -89,7 +91,7 @@ export default {
           },
           legend: {
             y: 'bottom',
-            data: this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => item.disc),
+            data: discData,
             itemWidth: 14,
             itemHeight: 14,
             textStyle: {
@@ -106,7 +108,7 @@ export default {
                   formatter: '{b} \n {d}%',
                 }
               },
-              data: this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => ({value: item.money, name: item.disc})),
+              data: valueData,
               color: ['rgb(82,184,252)','rgb(114,219,119)','rgb(253,177,91)','rgb(255,90,166)']
             }
           ]
@@ -117,14 +119,14 @@ export default {
     },
     monthChange() {
       this.getIncomeDate()
-    }
+    },
   
   },
   computed: {
     monthComputed() {
       return this.month.getFullYear() + '-' + (this.month.getMonth() + 1)
     }
-  }
+  },
 }
 </script>
 <style lang='scss' scoped>

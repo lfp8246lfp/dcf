@@ -28,8 +28,6 @@ export default {
 
 .login{
   position: absolute;
-  display: flex;
-  justify-content: flex-end;
   width: 100%;
   height: 100%;
   background: url("../../../static/images/loginbg.jpg") no-repeat;
@@ -40,12 +38,12 @@ export default {
     top: 1.36rem;
   }
   .lgbox{
+    float: right;
     width: 9.4rem;
     margin: 2.6rem 2.4rem;
     box-sizing: border-box;
-    padding: 0.78rem;
+    padding: 50px;
     background-color: #fff;
-    border: 1px solid #000;
     border-radius: 5px;
   }
 }

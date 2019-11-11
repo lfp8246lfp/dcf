@@ -10,4 +10,10 @@ export default [
         method: 'get',
         url: http + '/service/analysisservice/PropertyIndexService/energyStatisticsDetail'
     },
+    // 历史数据
+    {
+        name: 'queryHistory',
+        method: 'get',
+        url: http + '/service/archivesservice/PropertyManageService/queryHistory'
+    },
 ];

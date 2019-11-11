@@ -1,140 +1,189 @@
 <template>
-  <div id="energyStatistics">
-    <el-card>
-      <h3>单位列表</h3>
-      <div class="datePicker">
-        <el-date-picker
-          v-model="date"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          style="border-top-right-radius:0;border-bottom-right-radius:0;">
-        </el-date-picker>
-        <el-button type="primary" icon="el-icon-search" @click="getPowerData"></el-button>
-      </div>
-      <el-button style="float:right;margin-bottom:20px;margin:-41px 20px 0;">
-          <i class="fa fa-upload"></i>
-          导出
-      </el-button>
-      <div class="table">
-          <el-table
-            :data="tableData"
-            border
-            stripe 
-            style="width: 100%"
-            :header-cell-style="{background:'rgb(250,250,250)'}">
-            <el-table-column
-              prop="roomid"
-              label="房间名称">
-            </el-table-column>
-            <el-table-column
-              prop="roomname"
-              label="住户名">
-            </el-table-column>
-            <el-table-column
-              prop="commaddress1"
-              label="电表编号">
-            </el-table-column>
-            <el-table-column
-              prop="electricityconsumption"
-              label="用电量">
-            </el-table-column>
-            <el-table-column
-              prop="commaddress2"
-              label="水表编号">
-            </el-table-column>
-            <el-table-column
-              prop="waterconsumption"
-              label="用水量">
-            </el-table-column>
-            <el-table-column
-              label="操作">
-              <template slot-scope="scope">
-                <el-button class="el-icon-date" size="mini" @click="getPowerDetail(scope.row)"></el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-      </div>
-
-      <div class="page">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :page-sizes="[10, 20, 30]"
-          :page-size="10"
-          layout="prev, pager, next, sizes"
-          :total="total">
-        </el-pagination>
-      </div>
-
-
-      <el-dialog title="历史记录" :visible.sync="dialogTableVisible">
-
-        <el-tabs v-model="active" type="card">
-          <el-tab-pane label="WIFI电表" name="first">
-            <el-table 
-              :data="meterTableData"
-              border
-              stripe 
-              style="width: 100%"
-              :header-cell-style="{background:'rgb(250,250,250)'}">
-              <el-table-column label="时间"></el-table-column>
-              <el-table-column label="电表示数"></el-table-column>
-            </el-table>
-            <div class="page">
-              <el-pagination
-                @size-change="handleSizeChange1"
-                @current-change="handleCurrentChange1"
-                :page-sizes="[10, 20, 30]"
-                :page-size="10"
-                layout="prev, pager, next, sizes"
-                :total="total1">
-              </el-pagination>
+  <div id="powerStatistics">
+    <el-tabs v-model="active" type="card">
+      <el-tab-pane label="WIFI表历史数据" name="meter">
+        <div class="meter">
+          <el-card>
+          <h3>WIFI表历史数据</h3>
+          <div class="operate">
+            <div class="datePicker">
+              <el-date-picker
+                v-model="date2"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+              <!-- <el-button type="primary" icon="el-icon-search" @click="getMeterHistoryData"></el-button> -->
             </div>
-          </el-tab-pane>
-
-          <el-tab-pane label="WIFI水表" name="second">
-            <el-table 
-              :data="waterMeterTableData"
-              border
-              stripe 
-              style="width: 100%"
-              :header-cell-style="{background:'rgb(250,250,250)'}">
-              <el-table-column label="时间"></el-table-column>
-              <el-table-column label="水表示数"></el-table-column>
-            </el-table>
-            <div class="page">
-              <el-pagination
-                @size-change="handleSizeChange2"
-                @current-change="handleCurrentChange2"
-                :page-sizes="[10, 20, 30]"
-                :page-size="10"
-                layout="prev, pager, next, sizes"
-                :total="total2">
-              </el-pagination>
+            <div class="search">
+              <el-input placeholder="搜索WIFI表通讯地址" v-model="meterSearch"></el-input>
+              <el-button type="primary" class="el-icon-search" size="mini" @click="getMeterHistoryData"></el-button>
             </div>
-          </el-tab-pane>
-        </el-tabs>
-
-      </el-dialog>
-
-    </el-card>
+            <!-- <el-button class="upload_btn">
+                <i class="fa fa-upload"></i>
+                导出
+            </el-button> -->
+          </div>
+          <div class="table">
+              <el-table
+                :data="meterTableData"
+                border
+                stripe 
+                style="width: 100%"
+                :header-cell-style="{background:'rgb(250,250,250)'}">
+                <el-table-column 
+                  type="index" 
+                  label="序号" 
+                  width="60">
+                </el-table-column>
+                <el-table-column
+                  prop="disc"
+                  label="WIFI表名称">
+                </el-table-column>
+                <el-table-column
+                  prop="commaddress"
+                  label="通讯地址">
+                </el-table-column>
+                <el-table-column
+                  prop="zybm"
+                  label="表码">
+                </el-table-column>
+                <el-table-column
+                  label="数据时间"
+                  :formatter="dateFormatter2">
+                </el-table-column>
+                <el-table-column
+                  prop="balancevlaue"
+                  label="剩余电量">
+                </el-table-column>
+                <el-table-column
+                  prop="signal"
+                  label="信号强度">
+                </el-table-column>
+                <!-- <el-table-column
+                  label="操作">
+                  <template slot-scope="scope">
+                    <el-button class="el-icon-date" size="mini" @click="getPowerDetail(scope.row)"></el-button>
+                  </template>
+                </el-table-column> -->
+              </el-table>
+          </div>
+          <div class="page">
+            <el-pagination
+              @size-change="handleSizeChange2"
+              @current-change="handleCurrentChange2"
+              :page-sizes="[10, 20, 30]"
+              :page-size="10"
+              layout="prev, pager, next, sizes"
+              :total="total2">
+            </el-pagination>
+          </div>
+          </el-card>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="充电桩历史数据" name="charge">
+        <div class="charge">
+          <el-card>
+          <h3>充电桩历史数据</h3>
+          <div class="operate">
+            <div class="datePicker">
+              <el-date-picker
+                v-model="date1"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期">
+              </el-date-picker>
+              <!-- <el-button type="primary" icon="el-icon-search" @click="getChargeHistoryData"></el-button> -->
+            </div>
+            <div class="search">
+              <el-input placeholder="搜索充电桩通讯地址" v-model="chargeSearch"></el-input>
+              <el-button type="primary" class="el-icon-search" size="mini" @click="getChargeHistoryData"></el-button>
+            </div>
+            <!-- <el-button class="upload_btn">
+                <i class="fa fa-upload"></i>
+                导出
+            </el-button> -->
+          </div>
+          <div class="table">
+              <el-table
+                :data="waterMeterTableData"
+                border
+                stripe 
+                style="width: 100%"
+                :header-cell-style="{background:'rgb(250,250,250)'}">
+                <el-table-column 
+                type="index" 
+                label="序号" 
+                width="60">
+                </el-table-column>
+                <el-table-column
+                  prop="chargeName"
+                  label="充电桩名称">
+                </el-table-column>
+                <el-table-column
+                  prop="commaddress"
+                  label="通讯地址">
+                </el-table-column>
+                <el-table-column
+                  prop="plugName"
+                  label="插座名称">
+                </el-table-column>
+                <el-table-column
+                  label="读取时间"
+                  :formatter="dateFormatter1">
+                </el-table-column>
+                <el-table-column
+                  prop="ia"
+                  label="电压（V）">
+                </el-table-column>
+                <el-table-column
+                  prop="ua"
+                  label="电流（A）">
+                </el-table-column>
+                <el-table-column
+                  prop="pa"
+                  label="功率（kW）">
+                </el-table-column>
+                <el-table-column
+                  prop="totalenergy"
+                  label="总能耗（kWh）">
+                </el-table-column>
+                <!-- <el-table-column
+                  label="操作">
+                  <template slot-scope="scope">
+                    <el-button class="el-icon-date" size="mini" @click="getPowerDetail(scope.row)"></el-button>
+                  </template>
+                </el-table-column> -->
+              </el-table>
+          </div>
+          <div class="page">
+            <el-pagination
+              @size-change="handleSizeChange1"
+              @current-change="handleCurrentChange1"
+              :page-sizes="[10, 20, 30]"
+              :page-size="10"
+              layout="prev, pager, next, sizes"
+              :total="total1">
+            </el-pagination>
+          </div>
+          </el-card>
+        </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
+
 </template>
 <script>
 export default {
   name: 'energyStatistics',
   data () {
+    let date = [new Date(new Date().setMonth(new Date().getMonth() - 2)), new Date()]
     return {
-      date: [new Date(+new Date() - 30*24*60*60*1000), new Date()],
-      beginAt: '',
-      endAt: '',
-      tableData: [],
-      pageParams: {
-        pageNum: 1,
-        pageSize: 10,
-      },
+      active: 'meter',
+      date1: date,
+      date2: date,
       pageParams1: {
         pageNum: 1,
         pageSize: 10,
@@ -143,105 +192,91 @@ export default {
         pageNum: 1,
         pageSize: 10,
       },
-      total: 0,
       total1: 0,
       total2: 0,
-      dialogTableVisible: false,
       meterTableData: [],
       waterMeterTableData: [],
-      active: 'first',
-      commaddress1: '',
-      commaddress2: ''
+      chargeSearch: '',
+      meterSearch: '',
     };
   },
   methods:{
-    handleSizeChange(size) {
-      this.pageParams.pageSize = size
-      this.getPowerData()
-    },
-    handleCurrentChange(page) {
-      this.pageParams.pageNum = page
-      this.getPowerData()
-    },
     handleSizeChange1(size) {
       this.pageParams1.pageSize = size
-      this.sendReq1()
+      this.getChargeHistoryData()
     },
     handleCurrentChange1(page) {
       this.pageParams1.pageNum = page
-      this.sendReq1()
+      this.getChargeHistoryData()
     },
     handleSizeChange2(size) {
       this.pageParams2.pageSize = size
-      this.sendReq2()
+      this.getMeterHistoryData()
     },
     handleCurrentChange2(page) {
       this.pageParams2.pageNum = page
-      this.sendReq2()
+      this.getMeterHistoryData()
     },
 
-    getPowerData() {
-      let params = {
-        beginAt: this.dateFormat(this.date[0]),
-        // beginAt: '2019-08-06 12:30:30',
-        endAt: this.dateFormat(this.date[1]),
-        // endAt: '2019-11-06 12:30:30',
-        ...this.pageParams
+    getChargeHistoryData() {
+      let commaddress = null
+      if (this.chargeSearch.trim()) {
+        commaddress = this.chargeSearch
       }
-      // console.log('用能统计参数',params)
-      this.$request('energyStatistics', {params}).then(res => {
-        console.log('用能统计',res.data)
-        this.tableData = res.data.items
-        this.total = res.data.total
-        this.beginAt = params.beginAt
-        this.endAt = params.endAt
-      })
-    },
-
-    getPowerDetail(row) {
-      this.commaddress1 = row.commaddress1
-      this.commaddress2 = row.commaddress2
-      this.sendReq1()
-      this.sendReq2()
-      this.dialogTableVisible = true
-    },
-
-    sendReq1() {
       let params = {
-        beginAt: this.beginAt,
-        endAt: this.endAt,
-        commaddress: this.commaddress1,
+        appType: 1,
+        commaddress,
+        beginAt: this.dateFormat(this.date1[0]),
+        endAt: this.dateFormat(this.date1[1]),
         ...this.pageParams1
       }
-      this.$request('energyStatisticsDetail', {params}).then(res => {
-        this.meterTableData = res.data.items
+      this.$request('queryHistory', {params}).then(res => {
+        console.log('充电桩历史数据',res.data)
+        this.waterMeterTableData = res.data.items
         this.total1 = res.data.total
       })
     },
-    sendReq2() {
+
+    getMeterHistoryData() {
+      let commaddress = null
+      if (this.meterSearch.trim()) {
+        commaddress = this.meterSearch
+      }
       let params = {
-        beginAt: this.beginAt,
-        endAt: this.endAt,
-        commaddress: this.commaddress2,
+        appType: 3,
+        commaddress,
+        beginAt: this.dateFormat(this.date2[0]),
+        endAt: this.dateFormat(this.date2[1]),
         ...this.pageParams2
       }
-      this.$request('energyStatisticsDetail', {params}).then(res => {
-        this.waterMeterTableData = res.data.items
+      this.$request('queryHistory', {params}).then(res => {
+        console.log('wifi表历史数据',res.data)
+        this.meterTableData = res.data.items
         this.total2 = res.data.total
       })
     },
 
     dateFormat(date) {
-      return '' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+    },
+    dateFormatter1(row) {
+      return this.dateFormat(new Date(row.readtime))
+    },
+    dateFormatter2(row) {
+      return this.dateFormat(new Date(row.datatime))
     },
   },
   mounted() {
-    this.getPowerData()
+    this.getChargeHistoryData()
+    this.getMeterHistoryData()
   }
 }
 </script>
 <style lang='scss' scoped>
-  #energyStatistics {
+#powerStatistics {
+  padding: 10px;
+  background-color: #fff;
+  .charge, .meter {
     .el-card {
       /deep/ .el-card__body {
         padding: 0;
@@ -254,19 +289,42 @@ export default {
         padding: 20px;
         margin-bottom: 20px;
       }
-      .datePicker {
-        display: flex;
-        margin-left: 20px;
-        .el-button {
-          width:40px;
-          height:40px;
-          padding:0;
-          text-align:center;
-          border-top-left-radius:0;
-          border-bottom-left-radius:0;
+      .operate {
+        height: 50px;
+        .datePicker {
+          display: flex;
+          float: left;
+          margin-left: 20px;
+          .el-button {
+            width:40px;
+            height:40px;
+            padding:0;
+            text-align:center;
+            border-top-left-radius:0;
+            border-bottom-left-radius:0;
+          }
+        }
+        .search {
+          display: flex;
+          float: left;
+          margin-left: 10px;
+          .el-input {
+            width: 200px;
+            /deep/ .el-input__inner {
+              height: 40px;
+              width: 200px;
+              border-radius: 4px 0 0 4px;
+            }
+          }
+          .el-button {
+            border-radius: 0 3px 3px 0;
+          }
+        }
+        .upload_btn {
+          float: right;
+          margin-right: 20px;
         }
       }
-
       .table {
         margin: 20px;
       }
@@ -325,4 +383,26 @@ export default {
       }
     }
   }
+
+  .el-tabs {
+    /deep/ .el-tabs__header {
+      border: 0;
+      display: flex;
+      justify-content: center;
+      .el-tabs__nav {
+        border-radius: 3px;
+        border: 1px solid rgb(221,224,231);
+        .el-tabs__item {
+          color: rgb(96,98,102);
+          border: none;
+        }
+        .el-tabs__item.is-active {
+          color: #fff;
+          background-color: rgb(45,134,225);
+        }
+      }
+    }
+  }
+}
+
 </style>

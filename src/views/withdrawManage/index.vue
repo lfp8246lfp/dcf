@@ -51,10 +51,10 @@
           </el-date-picker>
           <el-button type="primary" icon="el-icon-search" @click="getWithdrawDetail"></el-button>
         </div>
-        <el-button style="float:right;margin-bottom:20px;margin:-41px 20px 0;">
+        <!-- <el-button style="float:right;margin-bottom:20px;margin:-41px 20px 0;">
             <i class="fa fa-upload"></i>
             导出
-        </el-button>
+        </el-button> -->
         <div class="table">
           <el-table
             :data="tableData"
@@ -62,6 +62,11 @@
             stripe 
             style="width: 100%"
             :header-cell-style="{background:'rgb(250,250,250)'}">
+            <el-table-column 
+              type="index" 
+              label="序号" 
+              width="60">
+            </el-table-column>
             <el-table-column
               prop="withdrawdate"
               label="提现时间"
@@ -117,7 +122,8 @@
             <li>1.可提现余额仅包含用户充电收益，不包含运营商自己充电和退费的收益。</li>
             <li>2.提现需要后台审核，审核完成直接转帐到提现账号。</li>
             <li>3.填写姓名时，请使用您微信实名认证的姓名，否则会导致无法提现。</li>
-            <li>4.单次提现金额不能超过5000。</li>
+            <li>4.单次提现金额不能小于100。</li>
+            <li>5.单次提现金额不能超过5000。</li>
           </ul>
         </el-form-item>
       </el-form>
@@ -132,11 +138,19 @@
 <script>
 export default {
   data () {
-    const validate = (rule, value, callback) => {
+    const validateName = (rule, value, callback) => {
         if (value.trim()) {
             return callback()
         } else {
-            return callback(new Error('请输入姓名和提现金额'))
+            return callback(new Error('请输入姓名'))
+        }
+    }
+    const validateMoney = (rule, value, callback) => {
+        let reg = /^([1-9]\d{2}|[1-4]\d{3}|5000)$/
+        if (reg.test(value.trim())) {
+            return callback()
+        } else {
+            return callback(new Error('请输入正确的提现金额（100至5000）'))
         }
     }
     return {
@@ -164,8 +178,8 @@ export default {
         {label: '微信钱包', value: 3},
       ],
       addFormRules: {
-        payid: [{ validator: validate }],
-        rechargevalue: [{ validator: validate }]
+        payid: [{ validator: validateName }],
+        rechargevalue: [{ validator: validateMoney }]
       }
     };
   },

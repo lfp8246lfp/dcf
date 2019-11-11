@@ -7,10 +7,10 @@
             <div class="operate">
               <div class="btns">
                 <button class="el-icon-plus" @click="openAddRoomDialog"> 新增</button>
-                <button class="el-icon-upload2"> 导出</button>
+                <!-- <button class="el-icon-upload2"> 导出</button> -->
               </div>
               <div class="filter">
-                <el-input placeholder="搜索房间" v-model="listParams.search"></el-input>
+                <el-input placeholder="搜索房间" v-model="listParams.roomName"></el-input>
                 <el-button type="primary" class="el-icon-search" size="mini" @click="getRoomList"></el-button>
               </div>
             </div>
@@ -21,6 +21,11 @@
                   stripe 
                   style="width: 100%"
                   :header-cell-style="{background:'rgb(250,250,250)'}">
+                  <el-table-column
+                    type="index"
+                    label="序号"
+                    width="60">
+                  </el-table-column>
                   <el-table-column
                     prop="roomname"
                     label="房间名称">
@@ -50,7 +55,7 @@
                       <el-tooltip effect="dark" content="查看房间设备" placement="top-start">
                         <el-button size="mini" class="el-icon-s-operation" @click="openRoomDevices(scope.row.id)"></el-button>
                       </el-tooltip>
-                      <el-button size="mini" class="el-icon-s-tools"></el-button>
+                      <!-- <el-button size="mini" class="el-icon-s-tools"></el-button> -->
                     </template>
                   </el-table-column>
                 </el-table>
@@ -117,14 +122,15 @@
                     <div class="operate">
                       <div class="btns">
                         <button class="el-icon-plus" @click="openAddDevDialog(0)"> 新增</button>
-                        <button class="el-icon-upload2"> 导出</button>
+                        <!-- <button class="el-icon-upload2"> 导出</button> -->
                       </div>
                     </div>
                     <div class="table">
                       <el-table :data="roomDevData" border stripe style="width: 100%" :header-cell-style="{background:'rgb(250,250,250)'}">
-                        <el-table-column label="电表id" prop="rtuid"></el-table-column>
+                        <el-table-column type="index" label="序号" width="60"></el-table-column>
+                        <!-- <el-table-column label="电表id" prop="rtuid"></el-table-column> -->
                         <el-table-column label="电表名称" prop="disc"></el-table-column>
-                        <el-table-column label="wifi表通讯地址" prop="commaddress"></el-table-column>
+                        <el-table-column label="WIFI表通讯地址" prop="commaddress"></el-table-column>
                         <el-table-column label="电价值" :formatter="formatter"></el-table-column>
                         <!-- <el-table-column label="电价id" prop="priceid"></el-table-column> -->
                         <el-table-column label="剩余电量" prop="balanceValue"></el-table-column>
@@ -187,7 +193,7 @@
           <div class="operate">
           <div class="btns">
             <button class="el-icon-plus" @click="openAddChargeDialog"> 新增</button>
-            <button class="el-icon-upload2"> 导出</button>
+            <!-- <button class="el-icon-upload2"> 导出</button> -->
           </div>
           </div>
           <div class="table">
@@ -197,6 +203,11 @@
               stripe 
               style="width: 100%"
               :header-cell-style="{background:'rgb(250,250,250)'}">
+              <el-table-column 
+                type="index" 
+                label="序号" 
+                width="60">
+              </el-table-column>
               <el-table-column
                 prop="disc"
                 label="充电桩名称">
@@ -229,7 +240,7 @@
                 label="操作"
                 width="200">
                 <template slot-scope="scope">
-                  <el-button size="mini" class="el-icon-edit" @click="chargeDialogVisible(scope.row)"></el-button>
+                  <el-button size="mini" class="el-icon-edit" @click="openEditChargeDialog(scope.row)"></el-button>
                   <el-button size="mini" class="el-icon-delete-solid" @click="deleteCharge(scope.row)" v-if="!scope.plugUseTotal"></el-button>
                 </template>
               </el-table-column>
@@ -312,7 +323,7 @@ export default {
       devTotal: 0,
       // 获取房间数据的参数
       listParams: {
-        search: '',
+        roomName: '',
         pageNum: 1,
         pageSize: 10
       },
@@ -396,7 +407,6 @@ export default {
         if (res.code === 200) {
           this.tableData = res.data.items
           this.roomTotal = res.data.total
-          this.listParams.search = ''
         }
       })
     },
@@ -733,7 +743,6 @@ export default {
               type: 'success',
               message: '删除成功'
             })
-            this.meterDialogVisible = false
             this.openRoomDevices(this.id)
           } else {
             this.$message({

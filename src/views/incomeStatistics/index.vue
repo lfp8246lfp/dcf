@@ -41,10 +41,10 @@
 
       <el-card class="data">
 
-        <el-button style="margin-bottom:20px">
+        <!-- <el-button style="margin-bottom:20px">
           <i class="fa fa-upload"></i>
           导出
-        </el-button>
+        </el-button> -->
 
 
         <div class="table">
@@ -54,6 +54,11 @@
             stripe 
             style="width: 100%"
             :header-cell-style="{background:'rgb(250,250,250)'}">
+            <el-table-column 
+              type="index" 
+              label="序号" 
+              width="60">
+            </el-table-column>
             <el-table-column
               prop="transactionsdate"
               label="时间"
@@ -114,7 +119,7 @@ export default {
           return 'WIFI电表';
           break;
         case 2:
-          return '充电站';
+          return '充电桩';
           break;
         case 6:
           return 'WIFI水表';
@@ -197,7 +202,7 @@ export default {
           return 'WIFI电表';
           break;
         case 2:
-          return '充电站';
+          return '充电桩';
           break;
         case 6:
           return 'WIFI水表';

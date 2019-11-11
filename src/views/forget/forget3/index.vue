@@ -32,12 +32,13 @@ export default {
 <style lang='scss' scoped>
 #success {
   height: 7.5rem;
+  padding-bottom: 50px;
   text-align: center;
   .successImg {
     margin: 2.1rem 0 0.7rem;
   }
   p {
-    margin-top: 0.3rem;
+    margin-top: 0.2rem;
     font-size: 18px;
     span {
       color: rgb(77, 132, 251);

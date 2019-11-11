@@ -1,27 +1,23 @@
 <template>
   <div>
     <h1>找回密码</h1>
-    <el-form ref="form" :model="form" style="border-bottom:1px solid #eee">
-      <el-form-item>
-        <h3>密码</h3>
-        <div class="ipt">
-          <div class="icon">
+    <el-form ref="form" :model="form" label-position="top" :rules="changeRules">
+      <el-form-item label="密码" prop="pwd">
+        <el-input v-model="form.pwd" placeholder="请输入密码">
+          <template slot="prepend">
             <img src="../../../../static/images/lock.png" alt="">
-          </div>
-          <input type="password" v-model="form.pwd" placeholder="请输入密码">
-        </div>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="确认密码" prop="confirm">
+        <el-input v-model="form.confirm" placeholder="请再次输入密码">
+          <template slot="prepend">
+            <img src="../../../../static/images/lock.png" alt="">
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item>
-        <h3>确认密码</h3>
-        <div class="ipt">
-          <div class="icon">
-            <img src="../../../../static/images/lock.png" alt="">
-          </div>
-          <input type="password" v-model="form.confirm" placeholder="请再次输入密码">
-        </div>
-      </el-form-item>
-      <el-form-item>
-        <el-button class="nextBtn" type="primary" @click="confirmBtn">确定</el-button>
+        <el-button class="nextBtn" type="primary" @click="confirmBtn">注册</el-button>
       </el-form-item>
     </el-form>
     <p class="login">已有账号？<a href="/login">去登录</a></p>
@@ -30,24 +26,40 @@
 <script>
 export default {
   data () {
-
     return {
-        form: {
-            pwd: '',
-            confirm:''
-        }
+      form: {
+          pwd: '',
+          confirm:''
+      },
+      changeRules: {
+        pwd: [
+          { 
+            required: true,
+            message: '密码不能为空',
+            trigger: 'blur'
+          }
+        ],
+        confirm: [
+          { 
+            required: true,
+            message: '请重新输入密码',
+            trigger: 'blur'
+          }
+        ]
+      }
     };
   },
   methods: {
         confirmBtn () {
-          if (this.form.pwd.trim().length > 0) {
+          this.$refs.form.validate(valid => {
+            if (!valid) return
             if (this.form.pwd === this.form.confirm) {
-              let params = {
+              let obj = {
                 loginid: sessionStorage.getItem('mob'),
                 smscode: sessionStorage.getItem('auth'),
                 password: this.form.pwd
               }
-              this.$request('findPassword', params).then(res => {
+              this.$request('findPassword', obj).then(res => {
                 if (res.data.returnCode === 1) {
                   console.log(res)
                   this.$message({
@@ -69,12 +81,7 @@ export default {
                 message: '两次输入的密码不一致'
               })
             }
-          } else {
-            this.$message({
-              type: 'error',
-              message: '请输入密码'
-            })
-          }
+          })
         },
     }
 }
@@ -83,56 +90,37 @@ export default {
 h1{
   font-size: 27px;
   font-weight: 400;
-  /* text-align: center; */
   margin-bottom: 0.6rem;
-}
-
-h3 {
-  font-size: 14px;
-  font-weight: 400;
 }
 
 a {
   color: rgb(77,132,251)
 }
 
-.el-form-item {
-  width: 100%;
-  margin-bottom: 0.2rem;
-}
-
-.ipt {
-  width: 100%;
-  height: 0.94rem;
-  box-sizing: border-box;
-  .icon {
-    float: left;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 0.94rem;
-    height: 100%;
-    box-sizing: border-box;
-    border: 1px solid rgb(228, 231, 237);
+.el-form {
+  border-bottom: 1px solid #eee;
+  .el-form-item {
+    margin-bottom: 0.2rem;
+    .el-input {
+      height: 0.94rem;
+      /deep/ .el-input-group__prepend {
+        box-shadow: inset 0 0 0 1000px #fff!important;
+      }
+      /deep/ .el-input__inner {
+        height: 100%;
+        box-shadow: inset 0 0 0 1000px #fff!important;
+      }
+    }
+    .el-checkbox {
+      float:left;
+    }
+    .nextBtn {
+      width: 100%;
+      height: 50px;
+      margin: 50px 0 30px;
+      font-weight: 700;
+    }
   }
-  input {
-    float: left;
-    width: 6.8rem;
-    height: 100%;
-    padding-left: 15px;
-    margin-bottom: 0.1rem;
-    border: 1px solid rgb(228, 231, 237);
-    border-left: 0;
-    box-sizing: border-box;
-    box-shadow: inset 0 0 0 1000px #fff!important;
-  }
-}
-
-.nextBtn {
-  width:100%;
-  height:0.78rem;
-  margin: 0.3rem 0;
-  font-weight: 700;
 }
 
 .login {

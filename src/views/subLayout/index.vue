@@ -12,11 +12,11 @@
         
         <div class="pull-right" style="height: 70px;">
 
-          <div class="message pull-left" style="height: 70px;" @click="event">
+          <!-- <div class="message pull-left" style="height: 70px;" @click="event">
             <el-badge :value="0" class="item" >
               <img src="../../../static/images/bell.png" alt="" width="24">
             </el-badge>
-          </div>
+          </div> -->
 
           <div class="user_box pull-left">
             <img src="../../../static/images/user.png" alt="" width="24">

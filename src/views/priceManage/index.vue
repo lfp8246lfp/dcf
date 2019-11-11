@@ -14,6 +14,11 @@
                   stripe 
                   style="width: 100%"
                   :header-cell-style="{background:'rgb(250,250,250)'}">
+                  <el-table-column 
+                    type="index" 
+                    label="序号" 
+                    width="60">
+                  </el-table-column>
                   <el-table-column
                     prop="pricename"
                     label="电价名称">
@@ -70,7 +75,7 @@
 
       <el-tab-pane label="充电桩电价" name="second">
           <h2 style="margin-bottom: 20px;">充电桩电价</h2>
-          <el-form :inline="true" style="background-color: rgb(251,251,251)" class="chargeForm" label-width="150px" ref="chargeRef" :rules="formRules">
+          <el-form :inline="true" style="background-color: rgb(251,251,251)" class="chargeForm" label-width="150px" ref="chargeRef">
             <el-form-item label="时长1（小时）" prop="hour1">
               <el-input v-model="chargePrices[0].hour"></el-input>
             </el-form-item>
@@ -126,11 +131,18 @@
 <script>
 export default {
   data () {
-    const validate = (rule, value, callback) => {
-        if (value.trim()) {
+    const validateHour = (rule, value, callback) => {
+        if (value) {
             return callback()
         } else {
-            return callback(new Error('请输入完整的时长和价格'))
+            return callback(new Error('请输入时长'))
+        }
+    }
+    const validatePrice = (rule, value, callback) => {
+        if (value) {
+            return callback()
+        } else {
+            return callback(new Error('请输入价格'))
         }
     }
     return {
@@ -159,20 +171,20 @@ export default {
         {hour: '', price: ''},
       ],
       btnVisible: true,
-      formRules: {
-        hour1: [{ required: true, trigger: 'blur' }],
-        hour2: [{ required: true, trigger: 'blur' }],
-        hour3: [{ required: true, trigger: 'blur' }],
-        hour4: [{ required: true, trigger: 'blur' }],
-        hour5: [{ required: true, trigger: 'blur' }],
-        hour6: [{ required: true, trigger: 'blur' }],
-        price1: [{ required: true, trigger: 'blur' }],
-        price2: [{ required: true, trigger: 'blur' }],
-        price3: [{ required: true, trigger: 'blur' }],
-        price4: [{ required: true, trigger: 'blur' }],
-        price5: [{ required: true, trigger: 'blur' }],
-        price6: [{ required: true, trigger: 'blur' }]
-      }
+      // formRules: {
+      //   hour1: [{ validator: validateHour }],
+      //   hour2: [{ validator: validateHour }],
+      //   hour3: [{ validator: validateHour }],
+      //   hour4: [{ validator: validateHour }],
+      //   hour5: [{ validator: validateHour }],
+      //   hour6: [{ validator: validateHour }],
+      //   price1:[{ validator: validatePrice }],
+      //   price2:[{ validator: validatePrice }],
+      //   price3:[{ validator: validatePrice }],
+      //   price4:[{ validator: validatePrice }],
+      //   price5:[{ validator: validatePrice }],
+      //   price6:[{ validator: validatePrice }]
+      // },
     };
   },
   methods:{
@@ -339,31 +351,30 @@ export default {
     },
 
     addCharge() {
-      this.$confirm('是否继续操作', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-      }).then(() => {
-          let obj = {
-            opttype: 1,
-            item: this.chargePrices.map(item => ({hour: item.hour, price: item.price}))
-          }
-          this.$request('optCharingPrice', obj).then(res => {
-            console.log('新增充电桩电价', res)
-            if (res.data.returncode === 1) {
-              this.$message.success('新增成功')
-              this.getCharingPrice()
-            } else {
-              this.$message.error('新增失败')
+        this.$confirm('是否继续操作', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            let obj = {
+              opttype: 1,
+              item: this.chargePrices.map(item => ({hour: item.hour, price: item.price}))
             }
-          })
-      }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })       
-      })
-
+            this.$request('optCharingPrice', obj).then(res => {
+              console.log('新增充电桩电价', res)
+              if (res.data.returncode === 1) {
+                this.$message.success('新增成功')
+                this.getCharingPrice()
+              } else {
+                this.$message.error('新增失败')
+              }
+            })
+        }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })       
+        })
     },
     editCharge() {
       this.$confirm('是否继续操作', '提示', {
