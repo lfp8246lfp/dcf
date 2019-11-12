@@ -78,7 +78,7 @@ export default {
             return '收入统计';
             break;
           case 'powerstatistics':
-            return '用能统计';
+            return '历史数据';
             break;
           case 'billmanage':
             return '账单管理';

@@ -117,8 +117,8 @@
             </el-dialog>
 
             <el-dialog title="房间设备" :visible.sync="devDialogVisible" width="80%">
-              <el-tabs v-model="active1" type="card">
-                <el-tab-pane label="电表" name="meter">
+              <!-- <el-tabs v-model="active1" type="card">
+                <el-tab-pane label="电表" name="meter"> -->
                     <div class="operate">
                       <div class="btns">
                         <button class="el-icon-plus" @click="openAddDevDialog(0)"> 新增</button>
@@ -153,9 +153,9 @@
                         </el-pagination>
                       </div>
                     </div>
-                </el-tab-pane>
-                <el-tab-pane label="水表" name="waterMeter"></el-tab-pane>
-              </el-tabs>
+                <!-- </el-tab-pane> -->
+                <!-- <el-tab-pane label="水表" name="waterMeter"></el-tab-pane> -->
+              <!-- </el-tabs> -->
             </el-dialog>
 
             <el-dialog title="配置预付费" :visible.sync="meterDialogVisible" width="40%" @closed="closeAddDevDialog">

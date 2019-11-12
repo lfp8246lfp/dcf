@@ -75,7 +75,7 @@
 
       <el-tab-pane label="充电桩电价" name="second">
           <h2 style="margin-bottom: 20px;">充电桩电价</h2>
-          <el-form :inline="true" style="background-color: rgb(251,251,251)" class="chargeForm" label-width="150px" ref="chargeRef">
+          <el-form :inline="true" style="background-color: rgb(251,251,251)" class="chargeForm" label-width="150px">
             <el-form-item label="时长1（小时）" prop="hour1">
               <el-input v-model="chargePrices[0].hour"></el-input>
             </el-form-item>
@@ -232,8 +232,6 @@ export default {
             opttype: 1,
             ...this.form
           }
-          this.$refs.chargeRef.validate(valid => {
-            if (!valid) return
             this.$request('optWifiPrice', obj).then(res => {
               console.log('新建电价', res)
               if (res.data.returncode === 1) {
@@ -250,7 +248,6 @@ export default {
                 })
               }
             })
-          })
       }).catch(() => {
           this.$message({
             type: 'info',

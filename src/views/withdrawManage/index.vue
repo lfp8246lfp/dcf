@@ -114,6 +114,9 @@
         <el-form-item label="姓名" prop="payid">
           <el-input v-model="form.payid"></el-input>
         </el-form-item>
+        <el-form-item label="可提现金额" prop="rechargevalue">
+          <el-input v-model="withdrawData.withdrawalBalance" disabled></el-input>
+        </el-form-item>
         <el-form-item label="提现金额" prop="rechargevalue">
           <el-input v-model="form.rechargevalue"></el-input>
         </el-form-item>
@@ -206,6 +209,7 @@ export default {
       this.form.rechargevalue = ''
     },
     addWithdraw() {
+        if (this.form.rechargevalue > this.withdrawData.withdrawalBalance) return this.$message.error('可提现金额不足')
         this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',

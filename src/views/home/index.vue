@@ -242,9 +242,9 @@ export default {
               },
               data: [
                 {value:this.homeData.wifinum, name:'WIFI电表'},
-                {value:this.homeData.watermeter, name:'WIFI水表'},
+                // {value:this.homeData.watermeter, name:'WIFI水表'},
                 {value:this.homeData.chargingnum, name:'充电桩'},
-                {value:this.homeData.temporary, name:'临时充电设备'}
+                // {value:this.homeData.temporary, name:'临时充电设备'}
               ],
               color: ['rgb(82,184,252)','rgb(114,219,119)','rgb(253,177,91)','rgb(255,90,166)']
             }

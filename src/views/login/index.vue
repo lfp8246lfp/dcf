@@ -22,7 +22,7 @@
           </p>
         </el-form-item>
         <el-form-item>
-          <el-checkbox v-model="remember">记住密码</el-checkbox>
+          <!-- <el-checkbox v-model="remember">记住密码</el-checkbox> -->
           <el-button type="primary" @click="login" :loading="loading">登录</el-button>
         </el-form-item>
       </el-form>
@@ -40,7 +40,7 @@ export default {
                 accountid: '',
                 password: ''
             },
-            remember: false,
+            remember: true,
             loginRules: {
               accountid: [
               { 
