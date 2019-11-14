@@ -66,7 +66,7 @@
             </el-table-column>
             <el-table-column
               prop="transactionsvalue"
-              label="收入">
+              label="收入（元）">
             </el-table-column>
             <el-table-column
               prop="detailtype"
@@ -235,10 +235,9 @@ export default {
     display: flex;
     justify-content: space-around;
     box-sizing: border-box;
-    height: 773px;
     .filter {
       flex: 2;
-      height: 100%;
+      height: 773px;
       margin-right: 20px;
       h3 {
         font-size: 16px;
@@ -298,7 +297,7 @@ export default {
     }
     .data {
       flex: 7;
-      height: 773px;
+      min-height: 773px;
       .page {
         height: 80px;
         border: 1px solid rgb(238,238,238);

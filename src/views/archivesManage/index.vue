@@ -71,16 +71,16 @@
                 </div>
             </div>
             <el-dialog :title="(optype === 1 ? '新增' : '修改') + '房间'" :visible.sync="roomDialogVisible" width="40%" @closed="closeRoomDialog">
-              <el-form :model="form" label-width="28%">
-                <el-form-item label="房间名称">
+              <el-form :model="form" label-width="28%" ref="roomRef" :rules="roomRules">
+                <el-form-item label="房间名称" prop="roomname">
                   <el-input v-model="form.roomname"></el-input>
                 </el-form-item>
-                <el-form-item label="住户名">
+                <el-form-item label="住户名" prop="accountid">
                   <el-input v-model="form.accountid"></el-input>
                 </el-form-item>
-                <el-form-item label="选择地址">
+                <el-form-item label="选择地址" prop="region">
                       <div class="address">
-                        <el-select v-model="form.province" placeholder="省" @change="chooseP" size="mini">
+                        <el-select v-model="form.province" placeholder="省" @change="chooseP">
                           <el-option
                             v-for="item in provinces"
                             :key="item.id"
@@ -106,7 +106,7 @@
                         </el-select>
                       </div>
                 </el-form-item>
-                <el-form-item label="详细地址">
+                <el-form-item label="详细地址" prop="disc">
                   <el-input v-model="form.disc"></el-input>
                 </el-form-item>
               </el-form>
@@ -121,7 +121,7 @@
                 <el-tab-pane label="电表" name="meter"> -->
                     <div class="operate">
                       <div class="btns">
-                        <button class="el-icon-plus" @click="openAddDevDialog(0)"> 新增</button>
+                        <button class="el-icon-plus" @click="openAddDevDialog"> 新增</button>
                         <!-- <button class="el-icon-upload2"> 导出</button> -->
                       </div>
                     </div>
@@ -160,7 +160,7 @@
 
             <el-dialog title="配置预付费" :visible.sync="meterDialogVisible" width="40%" @closed="closeAddDevDialog">
               <el-form :model="devForm" label-width="28%" ref="editDevRef" :rules="editDevRules">
-                <el-form-item label="电表名称">
+                <el-form-item label="电表名称" prop="metername">
                   <el-input v-model="devForm.metername"></el-input>
                 </el-form-item>
                 <el-form-item label="表号" prop="commaddress">
@@ -169,7 +169,7 @@
                 <el-form-item label="阈值">
                   <el-input v-model="devForm.alarmenergy" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="电价（元/度）">
+                <el-form-item label="电价（元/度）" prop="priceid">
                   <el-select v-model="devForm.priceid">
                     <el-option
                       v-for="item in prices"
@@ -258,17 +258,17 @@
           </div>
 
           <el-dialog :title="optType === 1 ? '新增充电桩' : '修改充电桩'" :visible.sync="chargeDialogVisible" width="40%" @closed="closeChargeDialog">
-          <el-form :model="editChargeForm" label-width="28%">
-            <el-form-item label="通讯地址">
+          <el-form :model="editChargeForm" label-width="28%" ref="chargeRef" :rules="chargeRules">
+            <el-form-item label="通讯地址" prop="commaddress">
               <el-input v-model="editChargeForm.commaddress"></el-input>
             </el-form-item>
-            <el-form-item label="充电桩名称">
+            <el-form-item label="充电桩名称" prop="disc">
               <el-input v-model="editChargeForm.disc"></el-input>
             </el-form-item>
-            <el-form-item label="充电桩编号">
+            <el-form-item label="充电桩编号" prop="version">
               <el-input v-model="editChargeForm.version"></el-input>
             </el-form-item>
-            <el-form-item label="安装位置">
+            <el-form-item label="安装位置" prop="installer">
               <el-input v-model="editChargeForm.installer"></el-input>
             </el-form-item>
             <el-form-item label="经度">
@@ -277,7 +277,7 @@
             <el-form-item label="纬度">
               <el-input v-model="editChargeForm.dimension"></el-input>
             </el-form-item>
-            <el-form-item label="插座数量" v-if="optType === 1">
+            <el-form-item label="插座数量" v-if="optType === 1" required>
               <el-input v-model="chargingnum"></el-input>
               <el-button @click="chargingnum = 10">10</el-button>
               <el-button @click="chargingnum = 20">20</el-button>
@@ -312,7 +312,7 @@ export default {
         if (/^\d{8}$/.test(value)) {
             return callback()
         } else {
-            return callback(new Error('请输入8位数字'))
+            return callback(new Error('请输入8位数字的通讯地址'))
         }
     }
 
@@ -364,7 +364,9 @@ export default {
         priceid: '',
       },
       editDevRules: {
-        commaddress: [{ validator: validateCommaddress }]
+        metername: [{required:true, message:'请输入电表名称',trigger:'blur'}],
+        commaddress: [{ validator: validateCommaddress, required: true, trigger: 'blur' }],
+        priceid: [{ required: true, message:'请选择电价', trigger: 'blur' }],
       },
       roomDevData: [],
       meter: 0,
@@ -372,8 +374,6 @@ export default {
       devTypes: [{label: 'WIFI电表', value: 1}, {label: 'WIFI水表', value: 2}],
       // 电价数据
       prices: [],
-        
-
 
       tableData1: [],
       chargePageParams: {
@@ -391,11 +391,24 @@ export default {
         version: '',
         installer: '',
         dimension: '',
-        longitude: ''
+        longitude: '',
       },
-      optType: 1,
       chargingnum: '',
-      commaddress: ''
+      optType: 1,
+      commaddress: '',
+
+      roomRules: {
+        roomname: [{required:true,message:'请输入房间名称',trigger:'blur'}],
+        accountid: [{required:true,message:'请输入住户名',trigger:'blur'}],
+        region: [{required:true,message:'请选择地址',trigger:'blur'}],
+        disc: [{required:true,message:'请输入详细地址',trigger:'blur'}],
+      },
+      chargeRules: {
+        commaddress: [{required:true, validator: validateCommaddress,trigger:'blur'}],
+        disc: [{required:true,message:'请输入充电桩名称',trigger:'blur'}],
+        version: [{required:true,message:'请输入充电桩编号',trigger:'blur'}],
+        installer: [{required:true,message:'请输入安装位置',trigger:'blur'}],
+      }
     };
   },
 
@@ -451,12 +464,9 @@ export default {
 
     // 关闭 新增修改房间的对话框
     closeRoomDialog() {
-        this.form.roomname = ''
-        this.form.accountid = ''
-        this.form.disc = ''
+        this.$refs.roomRef.resetFields()
         this.form.province = ''
         this.form.town = ''
-        this.form.region = ''
     },
 
     // 打开新增房间的对话框
@@ -510,6 +520,8 @@ export default {
 
     // 新增房间
     addRoom() {
+      this.$refs.roomRef.validate(valid => {
+        if (!valid) return
         this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -541,6 +553,7 @@ export default {
             message: '已取消'
           })       
         })
+      })
     },
 
     // 编辑房间
@@ -641,8 +654,7 @@ export default {
 
     // 关闭新增修改设备的对话框
     closeAddDevDialog() {
-      this.devForm.metername = ''
-      this.devForm.commaddress = ''
+      this.$refs.editDevRef.resetFields()
     },
 
     // 打开新增设备的对话框
@@ -695,15 +707,13 @@ export default {
 
     // 新增/编辑电表
     editMeter() {
+      this.$refs.editDevRef.validate(valid => {
+        if (!valid) return
         this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$refs.editDevRef.validate(valid => {
-
-            if (!valid) return
-
             this.$request('addDevInfo', {id: this.id, ...this.devForm}).then(res => {
               console.log('新增修改设备', res)
               if (res.data.returncode === 1) {
@@ -717,17 +727,17 @@ export default {
               } else {
                 this.$message({
                   type: 'error',
-                  message: '操作失败'
+                  message: res.data.returnMsg
                 })
               }
             })
-          })
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消'
           })       
         })
+      })
     },
     // 删除电表
     deleteMeter(rtuid) {
@@ -792,64 +802,88 @@ export default {
 
     // 关闭充电桩对话框
     closeChargeDialog() {
-      this.editChargeForm.commaddress = ''
-      this.editChargeForm.disc = ''
-      this.editChargeForm.version = ''
-      this.editChargeForm.installer = ''
-      this.editChargeForm.longitude = ''
-      this.editChargeForm.dimension = ''
+      this.$refs.chargeRef.resetFields()
       this.chargingnum = ''
       this.commaddress = ''
       this.rtuid = ''
     },
 
     addCharge() {
-      let obj = {
-        optType: 1,
-        chargingnum: this.chargingnum,
-        obj: {
-          ischangeaddress: '0',
-          apptype: '1',
-          ...this.editChargeForm
-        }
-      }
-      this.$request('optRtuInfo', {...obj}).then(res => {
-        console.log('新增修改充电桩', res)
-        if (res.data.returnResult === 1) {
-          this.chargeDialogVisible = false
-          this.getChargeData()
-          this.$message.success('添加成功')
-        } else {
-          this.$message.error('添加失败')
-        }
+      this.$refs.chargeRef.validate(valid => {
+        if (!valid) return
+        // if (this.chargingnum.trim().length === 0) return this.$message.error('请输入插座数量')
+        this.$confirm('确定要继续吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+          let obj = {
+            optType: 1,
+            chargingnum: this.chargingnum,
+            obj: {
+              ischangeaddress: '0',
+              apptype: '1',
+              ...this.editChargeForm
+            }
+          }
+          this.$request('optRtuInfo', {...obj}).then(res => {
+            console.log('新增修改充电桩', res)
+            if (res.data.returnResult === 1) {
+              this.chargeDialogVisible = false
+              this.getChargeData()
+              this.$message.success('添加成功')
+            } else {
+              this.$message.error('添加失败')
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
       })
     },
     editCharge() {
-      let ischangeaddress
-      if (this.editChargeForm.commaddress.trim() === this.commaddress.trim()) {
-        ischangeaddress = '0'
-      } else {
-        ischangeaddress = '1'
-      }
-      let obj = {
-        optType: 2,
-        chargingnum: this.chargingnum,
-        obj: {
-          ischangeaddress,
-          apptype: '1',
-          rtuid: this.rtuid,
-          ...this.editChargeForm
-        }
-      }
-      this.$request('optRtuInfo', {...obj}).then(res => {
-        console.log('新增修改充电桩', res)
-        if (res.data.returnResult === 1) {
-          this.$message.success('修改成功')
-          this.chargeDialogVisible = false
-          this.getChargeData()
-        } else {
-          this.$message.error('修改失败')
-        }
+      this.$refs.chargeRef.validate(valid => {
+        if (!valid) return
+        this.$confirm('确定要继续吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+          let ischangeaddress
+          if (this.editChargeForm.commaddress.trim() === this.commaddress) {
+            ischangeaddress = '0'
+          } else {
+            ischangeaddress = '1'
+          }
+          let obj = {
+            optType: 2,
+            chargingnum: this.chargingnum,
+            obj: {
+              ischangeaddress,
+              apptype: '1',
+              rtuid: this.rtuid,
+              ...this.editChargeForm
+            }
+          }
+          this.$request('optRtuInfo', {...obj}).then(res => {
+            console.log('新增修改充电桩', res)
+            if (res.data.returnResult === 1) {
+              this.$message.success('修改成功')
+              this.chargeDialogVisible = false
+              this.getChargeData()
+            } else {
+              this.$message.error('修改失败')
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
       })
     },
     deleteCharge(row) {

@@ -105,7 +105,7 @@
       </div>
     </div>
     <el-dialog title="新建提现申请" :visible.sync="dialogFormVisible" @closed="closeDialog">
-      <el-form :model="form" :rules="addFormRules" ref="addRef" label-width="28%">
+      <el-form :model="form" :rules="addFormRules" ref="withdrawRef" label-width="28%">
         <el-form-item label="提现方式">
           <el-select v-model="form.withdrawtype" disabled>
             <el-option v-for="item in withdrawTypes" :label="item.label" :value="item.value" :key="item.value"></el-option>
@@ -114,7 +114,7 @@
         <el-form-item label="姓名" prop="payid">
           <el-input v-model="form.payid"></el-input>
         </el-form-item>
-        <el-form-item label="可提现金额" prop="rechargevalue">
+        <el-form-item label="可提现金额">
           <el-input v-model="withdrawData.withdrawalBalance" disabled></el-input>
         </el-form-item>
         <el-form-item label="提现金额" prop="rechargevalue">
@@ -209,13 +209,13 @@ export default {
       this.form.rechargevalue = ''
     },
     addWithdraw() {
+      this.$refs.withdrawRef.validate(valid => {
         if (this.form.rechargevalue > this.withdrawData.withdrawalBalance) return this.$message.error('可提现金额不足')
         this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$refs.addRef.validate(valid => {
             if (!valid) return
             this.$request('addWithdrawLog', this.form).then(res => {
               console.log('提现申请', res)
@@ -233,43 +233,13 @@ export default {
                 })
               }
             })
-          })
-          // if (this.form.payid.trim()) {
-          //   this.$request('addWithdrawLog', this.form).then(res => {
-          //     console.log('提现申请', res)
-          //     if (res.data.returnCode === 1) {
-          //       this.$message({
-          //         type: 'success',
-          //         message: '申请成功'
-          //       })
-          //       this.dialogFormVisible = false
-          //       this.getWithdrawDetail()
-          //     } else {
-          //       if (!this.form.rechargevalue.trim()) {
-          //         this.$message({
-          //           type: 'error',
-          //           message: '请填写金额'
-          //         })
-          //       } else {
-          //         this.$message({
-          //           type: 'error',
-          //           message: '申请失败'
-          //         })
-          //       }
-          //     }
-          //   })
-          // } else {
-          //   this.$message({
-          //     type: 'error',
-          //     message: '请填写姓名'
-          //   })
-          // }
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消'
           })       
         })
+      })
     },
 
     handleSizeChange(size) {

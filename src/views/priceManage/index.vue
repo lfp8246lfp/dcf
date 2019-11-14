@@ -57,11 +57,11 @@
                 </div>
             </div>
             <el-dialog :title="opttype === 1 ? '新增电价' : '修改电价'" :visible.sync="dialogFormVisible" width="40%">
-              <el-form :model="form" label-width="28%">
-                <el-form-item label="电价名称">
+              <el-form :model="form" label-width="28%" ref="meterRef" :rules="meterRules">
+                <el-form-item label="电价名称" prop="pricename">
                   <el-input v-model="form.pricename"></el-input>
                 </el-form-item>
-                <el-form-item label="电价（元/kWh）">
+                <el-form-item label="电价（元/kWh）" prop="pricevalue">
                   <el-input v-model="form.pricevalue"></el-input>
                 </el-form-item>
               </el-form>
@@ -123,28 +123,11 @@
       </el-tab-pane>
     </el-tabs>
   </div>
-
-
-
   </div>
 </template>
 <script>
 export default {
   data () {
-    const validateHour = (rule, value, callback) => {
-        if (value) {
-            return callback()
-        } else {
-            return callback(new Error('请输入时长'))
-        }
-    }
-    const validatePrice = (rule, value, callback) => {
-        if (value) {
-            return callback()
-        } else {
-            return callback(new Error('请输入价格'))
-        }
-    }
     return {
       active: 'first',
       tableData: [],
@@ -171,20 +154,10 @@ export default {
         {hour: '', price: ''},
       ],
       btnVisible: true,
-      // formRules: {
-      //   hour1: [{ validator: validateHour }],
-      //   hour2: [{ validator: validateHour }],
-      //   hour3: [{ validator: validateHour }],
-      //   hour4: [{ validator: validateHour }],
-      //   hour5: [{ validator: validateHour }],
-      //   hour6: [{ validator: validateHour }],
-      //   price1:[{ validator: validatePrice }],
-      //   price2:[{ validator: validatePrice }],
-      //   price3:[{ validator: validatePrice }],
-      //   price4:[{ validator: validatePrice }],
-      //   price5:[{ validator: validatePrice }],
-      //   price6:[{ validator: validatePrice }]
-      // },
+      meterRules: {
+        pricename: [{required:true, message:'请输入电价名称', trigger:'blur'}],
+        pricevalue: [{required:true,message:'请输入电价',trigger:'blur'}],
+      }
     };
   },
   methods:{
@@ -223,74 +196,81 @@ export default {
     },
 
     addPrice() {
-      this.$confirm('是否继续操作', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-      }).then(() => {
-          let obj = {
-            opttype: 1,
-            ...this.form
-          }
+      this.$refs.meterRef.validate(valid => {
+        if (!valid) return
+        this.$confirm('是否继续操作', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            let obj = {
+              opttype: 1,
+              ...this.form
+            }
+              this.$request('optWifiPrice', obj).then(res => {
+                console.log('新建电价', res)
+                if (res.data.returncode === 1) {
+                  this.dialogFormVisible = false
+                  this.getElectricityPrice()
+                  this.$message({
+                    type: 'success',
+                    message: '添加成功'
+                  })
+                } else {
+                  this.$message({
+                    type: 'error',
+                    message: '添加失败'
+                  })
+                }
+              })
+        }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })       
+        })
+      })
+
+    },
+
+    editPrice() {
+      this.$refs.meterRef.validate(valid => {
+        if (!valid) return
+        this.$confirm('是否继续操作', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            let obj = {
+              opttype: 2,
+              priceid: this.priceid,
+              departmentid: this.departmentid,
+              ...this.form
+            }
             this.$request('optWifiPrice', obj).then(res => {
-              console.log('新建电价', res)
+              console.log('修改电价', res)
               if (res.data.returncode === 1) {
                 this.dialogFormVisible = false
                 this.getElectricityPrice()
+                this.form.pricevalue = ''
+                this.form.pricename = ''
                 this.$message({
                   type: 'success',
-                  message: '添加成功'
+                  message: '修改成功'
                 })
               } else {
                 this.$message({
                   type: 'error',
-                  message: '添加失败'
+                  message: '修改失败'
                 })
               }
             })
-      }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })       
-      })
-    },
-
-    editPrice() {
-      this.$confirm('是否继续操作', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-      }).then(() => {
-          let obj = {
-            opttype: 2,
-            priceid: this.priceid,
-            departmentid: this.departmentid,
-            ...this.form
-          }
-          this.$request('optWifiPrice', obj).then(res => {
-            console.log('修改电价', res)
-            if (res.data.returncode === 1) {
-              this.dialogFormVisible = false
-              this.getElectricityPrice()
-              this.form.pricevalue = ''
-              this.form.pricename = ''
-              this.$message({
-                type: 'success',
-                message: '修改成功'
-              })
-            } else {
-              this.$message({
-                type: 'error',
-                message: '修改失败'
-              })
-            }
-          })
-      }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          })       
+        }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消'
+            })       
+        })
       })
     },
     
@@ -348,6 +328,7 @@ export default {
     },
 
     addCharge() {
+        if (!this.validate()) return
         this.$confirm('是否继续操作', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -374,6 +355,7 @@ export default {
         })
     },
     editCharge() {
+      if (!this.validate()) return
       this.$confirm('是否继续操作', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -399,6 +381,24 @@ export default {
           })       
       })
 
+    },
+
+    validate() {
+      let isInput = this.chargePrices.every(item => {
+        return item.hour.trim().length > 0 && item.price.trim().length > 0
+      })
+      let isNum = this.chargePrices.some(item => {
+        return Number(item.hour.trim()) === NaN || Number(item.price.trim()) === NaN
+      })
+      if (!isInput) {
+        this.$message.error('请输入完整的时长和价格')
+        return false
+      } else if (!isNum) {
+        this.$message.error('请输入数字')
+        return false
+      } else {
+        return true
+      }
     },
     deleteCharge() {
       this.$confirm('是否继续操作', '提示', {

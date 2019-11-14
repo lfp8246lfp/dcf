@@ -179,8 +179,7 @@ export default {
             x: 'center',
             y: '35%',
             textStyle: {
-              fontSize: 28,
-              fontweight: 'normal',
+              fontSize: 28
             },
             grid: {
               top: '10%',
@@ -191,8 +190,12 @@ export default {
             },
             itemGap: 0
           },
+          tooltip: {
+            show: true,
+            formatter: '{a} <br/>{b} : {c} ({d}%)'
+          },
           legend: {
-            y: 'bottom',
+            bottom: '10%',
             data: ['WIFI电表','WIFI水表','充电桩','临时充电设备'],
             itemWidth: 14,
             itemHeight: 14,
@@ -217,7 +220,6 @@ export default {
             
             formatter: name => {
               let data = datas[names.findIndex(item => item === name)]
-
               let a = '{a|' + name + '}'
               let b = '{b|' + (data / total * 100).toFixed(2) + '%}'
               if (total === 0) {
@@ -229,7 +231,7 @@ export default {
           },
           series: [
             {
-              name:'访问来源',
+              name:'设备类型',
               type:'pie',
               radius: ['40%', '50%'],
               center: ['50%', '40%'],
@@ -281,23 +283,33 @@ export default {
       myChart.setOption({
             color: ['#3398DB'],
             grid: {
-              left: 30,
+              left: 50,
               right: 30,
-              top: 30
+              top: 30,
+              bottom: 70
+            },
+            tooltip: {
+              show: true,
+              formatter: '{b}<br/>{a}: {c}元',
+              axisPointer: {
+                type: 'cross'
+              }
             },
             xAxis : [
                 {
                     type : 'category',
                     data : this.recentData.xAxis,
                     axisLabel: {
-                        margin: 10,
-                        interval: 1000,
-                        showMinLabel: true,
-                        showMaxLabel: true,
+                        interval: 1,
                         textStyle: {
                             color: 'rgb(153,153,153)',
                             fontSize: 12,
                         },
+                    },
+                    axisLine: {
+                      lineStyle: {
+                        color: 'rgb(238,238,238)'
+                      }
                     },
                 }
             ],
@@ -319,7 +331,7 @@ export default {
             ],
             series : [
               {
-                name:'income',
+                name:'收入',
                 type:'bar',
                 barWidth: '30%',
                 data:this.recentData.yAxis

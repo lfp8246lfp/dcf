@@ -46,16 +46,16 @@
                   label="通讯地址">
                 </el-table-column>
                 <el-table-column
-                  prop="zybm"
-                  label="表码">
-                </el-table-column>
-                <el-table-column
                   label="数据时间"
                   :formatter="dateFormatter2">
                 </el-table-column>
                 <el-table-column
+                  prop="zybm"
+                  label="表码">
+                </el-table-column>
+                <el-table-column
                   prop="balancevlaue"
-                  label="剩余电量">
+                  label="剩余电量（kWh）">
                 </el-table-column>
                 <el-table-column
                   prop="signal"
@@ -131,7 +131,7 @@
                   label="插座名称">
                 </el-table-column>
                 <el-table-column
-                  label="读取时间"
+                  label="数据时间"
                   :formatter="dateFormatter1">
                 </el-table-column>
                 <el-table-column
@@ -179,11 +179,10 @@
 export default {
   name: 'energyStatistics',
   data () {
-    let date = [new Date(new Date().setMonth(new Date().getMonth() - 2)), new Date()]
     return {
       active: 'meter',
-      date1: date,
-      date2: date,
+      date1: [new Date(new Date().setMonth(new Date().getMonth() - 2)), new Date()],
+      date2: [new Date(new Date().setMonth(new Date().getMonth() - 2)), new Date()],
       pageParams1: {
         pageNum: 1,
         pageSize: 10,
@@ -231,7 +230,7 @@ export default {
         ...this.pageParams1
       }
       this.$request('queryHistory', {params}).then(res => {
-        console.log('充电桩历史数据',res.data)
+        console.log('充电桩历史数据',res)
         this.waterMeterTableData = res.data.items
         this.total1 = res.data.total
       })
@@ -250,7 +249,7 @@ export default {
         ...this.pageParams2
       }
       this.$request('queryHistory', {params}).then(res => {
-        console.log('wifi表历史数据',res.data)
+        console.log('wifi表历史数据',res)
         this.meterTableData = res.data.items
         this.total2 = res.data.total
       })

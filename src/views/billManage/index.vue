@@ -68,8 +68,8 @@ export default {
       })
     },
     drawRing() {
-        let discData = this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => item.disc)
-        let valueData = this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'wifi表').map(item => ({value: item.money, name: item.disc}))
+        let discData = this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'WIFI表').map(item => item.disc)
+        let valueData = this.income.filter(item => item.Detail || item.disc === '充电桩' || item.disc === 'WIFI表').map(item => ({value: item.money, name: item.disc}))
         this.chart = echarts.init(document.getElementById('ring'))
         this.chart.setOption({
           title: {
@@ -85,9 +85,6 @@ export default {
               fontSize: 14,
               color: 'rgb(164,164,164)'
             }
-          },
-          grid: {
-            top: '0'
           },
           legend: {
             y: 'bottom',
@@ -196,7 +193,7 @@ export default {
         align-items: center;
         float: left;
         width: 33.3%;
-        height: 1.875rem;
+        height: 1.88rem;
         margin: 30px 0;
         padding-left: 1rem;
         border-right: 1px solid rgb(221,224,231);
