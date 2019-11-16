@@ -41,10 +41,9 @@
 
       <el-card class="data">
 
-        <!-- <el-button style="margin-bottom:20px">
-          <i class="fa fa-upload"></i>
+        <el-button style="margin-bottom:20px" class="fa fa-upload" @click="download">
           导出
-        </el-button> -->
+        </el-button>
 
 
         <div class="table">
@@ -177,7 +176,7 @@ export default {
       }
       // console.log('收益统计参数', params)
       this.$request('revenueStatistics', {params}).then(res => {
-        console.log('收益统计数据:', res.data)
+        console.log('收益统计数据:', res)
         if (res.code === 200) {
           this.tableData = res.data.items
           this.total = res.data.total
@@ -223,7 +222,46 @@ export default {
           return '押金';
           break;
       }
-    }
+    },
+
+    download() {
+      // let params = {
+      //   beginAt: this.dateFormat(this.date[0]),
+      //   endAt: this.dateFormat(this.date[1]),
+      //   type: 3,
+      //   ...this.pageParams
+      // }
+      let params = {
+        "beginAt":"2019-9-01 9:2:54",
+        "endAt":"2019-10-1 9:2:54",
+        "pageNum":"1",
+        "pageSize":"10",
+        "fileType":"1",
+        "replace":{
+           "detailtype":{
+            "2":"充电桩收益",
+            "3":"wifi表收益"
+           }
+          },
+        "list":[
+          {"property":"chatname","propertyValue":"微信名称"},
+          {"property":"transactionsvalue","propertyValue":"金额"},
+          {"property":"detailtype","propertyValue":"流水类型"},
+          {"property":"transactionsdate","propertyValue":"时间"}
+        ]
+      }
+
+      this.$request('exprotRevenueStatistics', params).then(res => {
+        console.log(res)
+        let url = window.URL.createObjectURL(new Blob([res.data.bindata]), {type: 'application/x-xls'})
+        let link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', `WIFI电表收入统计.xls`)
+        document.body.appendChild(link)
+        link.click()
+      })
+    },
   },
   mounted() {
     this.getRevenue()

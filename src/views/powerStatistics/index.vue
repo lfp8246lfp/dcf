@@ -20,10 +20,9 @@
               <el-input placeholder="搜索WIFI表通讯地址" v-model="meterSearch"></el-input>
               <el-button type="primary" class="el-icon-search" size="mini" @click="getMeterHistoryData"></el-button>
             </div>
-            <!-- <el-button class="upload_btn">
-                <i class="fa fa-upload"></i>
+            <el-button class="upload_btn fa fa-upload">
                 导出
-            </el-button> -->
+            </el-button>
           </div>
           <div class="table">
               <el-table
@@ -101,10 +100,9 @@
               <el-input placeholder="搜索充电桩通讯地址" v-model="chargeSearch"></el-input>
               <el-button type="primary" class="el-icon-search" size="mini" @click="getChargeHistoryData"></el-button>
             </div>
-            <!-- <el-button class="upload_btn">
-                <i class="fa fa-upload"></i>
+            <el-button class="upload_btn fa fa-upload">
                 导出
-            </el-button> -->
+            </el-button>
           </div>
           <div class="table">
               <el-table

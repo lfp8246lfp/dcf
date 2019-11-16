@@ -250,7 +250,7 @@ export default {
               ],
               color: ['rgb(82,184,252)','rgb(114,219,119)','rgb(253,177,91)','rgb(255,90,166)']
             }
-          ]
+          ],
         })
 
 
@@ -334,7 +334,17 @@ export default {
                 name:'收入',
                 type:'bar',
                 barWidth: '30%',
-                data:this.recentData.yAxis
+                data:this.recentData.yAxis,
+                label: {
+                  normal: {
+                    show: false
+                  },
+                  emphasis: {
+                    show: true,
+                    position: 'outside',
+                    color: '#3398DB'
+                  }
+                }
               }
             ]
       })

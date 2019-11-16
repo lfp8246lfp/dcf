@@ -51,10 +51,9 @@
           </el-date-picker>
           <el-button type="primary" icon="el-icon-search" @click="getWithdrawDetail"></el-button>
         </div>
-        <!-- <el-button style="float:right;margin-bottom:20px;margin:-41px 20px 0;">
-            <i class="fa fa-upload"></i>
+        <el-button class="fa fa-upload" style="float:right;margin-bottom:20px;margin:-41px 20px 0;">
             导出
-        </el-button> -->
+        </el-button>
         <div class="table">
           <el-table
             :data="tableData"

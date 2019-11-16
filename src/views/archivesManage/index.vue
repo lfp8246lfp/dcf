@@ -7,7 +7,7 @@
             <div class="operate">
               <div class="btns">
                 <button class="el-icon-plus" @click="openAddRoomDialog"> 新增</button>
-                <!-- <button class="el-icon-upload2"> 导出</button> -->
+                <button class="el-icon-upload2"> 导出</button>
               </div>
               <div class="filter">
                 <el-input placeholder="搜索房间" v-model="listParams.roomName"></el-input>
@@ -122,7 +122,7 @@
                     <div class="operate">
                       <div class="btns">
                         <button class="el-icon-plus" @click="openAddDevDialog"> 新增</button>
-                        <!-- <button class="el-icon-upload2"> 导出</button> -->
+                        <button class="el-icon-upload2"> 导出</button>
                       </div>
                     </div>
                     <div class="table">
@@ -193,7 +193,7 @@
           <div class="operate">
           <div class="btns">
             <button class="el-icon-plus" @click="openAddChargeDialog"> 新增</button>
-            <!-- <button class="el-icon-upload2"> 导出</button> -->
+            <button class="el-icon-upload2"> 导出</button>
           </div>
           </div>
           <div class="table">

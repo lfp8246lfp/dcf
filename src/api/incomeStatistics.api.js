@@ -5,4 +5,9 @@ export default [
         method: 'get',
         url: http + '/service/analysisservice/PropertyIndexService/revenueStatistics'
     },
+    {
+        name: 'exprotRevenueStatistics',
+        method: 'post',
+        url: http + '/service/analysisservice/PropertyIndexService/exprotRevenueStatistics'
+    },
 ];

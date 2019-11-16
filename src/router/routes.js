@@ -50,18 +50,7 @@ const routes = [
                 component: resolve => require(['views/powerStatistics'], resolve),
                 meta: {
                     activeMenu: '/powerStatistics',
-                    title: '用能统计',
-                    noCache: true,
-                    affix: false
-                }
-            },
-            {
-                name: 'incomeManage',
-                path: '/incomemanage',
-                component: resolve => require(['views/incomemanage'], resolve),
-                meta: {
-                    activeMenu: '/incomemanage',
-                    title: '收入管理',
+                    title: '历史数据',
                     noCache: true,
                     affix: false
                 }
@@ -78,34 +67,12 @@ const routes = [
                 }
             },
             {
-                name: 'valueAddService',
-                path: '/valueaddservice',
-                component: resolve => require(['views/valueAddService'], resolve),
-                meta: {
-                    activeMenu: '/valueaddservice',
-                    title: '增值服务',
-                    noCache: true,
-                    affix: false
-                }
-            },
-            {
                 name: 'priceManage',
                 path: '/pricemanage',
                 component: resolve => require(['views/priceManage'], resolve),
                 meta: {
                     activeMenu: '/pricemanage',
                     title: '价格管理',
-                    noCache: true,
-                    affix: false
-                }
-            },
-            {
-                name: 'manageUnit',
-                path: '/manageunit',
-                component: resolve => require(['views/manageUnit'], resolve),
-                meta: {
-                    activeMenu: '/manageunit',
-                    title: '管理单位',
                     noCache: true,
                     affix: false
                 }
@@ -121,17 +88,6 @@ const routes = [
                     affix: false
                 }
             },
-            // {
-            //     name: 'amihome',
-            //     path: '/amihome',
-            //         component: resolve => require(['views/amihome'], resolve),
-            //         meta: {
-            //         activeMenu: '/amihome',
-            //         title: 'amihome',
-            //         noCache: true,
-            //         affix: true
-            //     }
-            // },
             ...CommonRouter
         ]
     },

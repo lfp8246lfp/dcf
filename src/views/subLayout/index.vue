@@ -222,8 +222,8 @@ export default {
     }
     .user_manage {
       position: absolute;
-      width: 220px;
-      right: 37px;
+      width: 150px;
+      right: 25px;
       z-index: 12;
       background-color: #fff;
       color: rgb(102,102,102);
