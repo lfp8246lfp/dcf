@@ -7,7 +7,7 @@
             <div class="operate">
               <div class="btns">
                 <button class="el-icon-plus" @click="openAddRoomDialog"> 新增</button>
-                <button class="el-icon-upload2"> 导出</button>
+                <button class="el-icon-upload2" @click="downloadRoom"> 导出</button>
               </div>
               <div class="filter">
                 <el-input placeholder="搜索房间" v-model="listParams.roomName"></el-input>
@@ -122,7 +122,7 @@
                     <div class="operate">
                       <div class="btns">
                         <button class="el-icon-plus" @click="openAddDevDialog"> 新增</button>
-                        <button class="el-icon-upload2"> 导出</button>
+                        <button class="el-icon-upload2" @click="downloadDev"> 导出</button>
                       </div>
                     </div>
                     <div class="table">
@@ -134,7 +134,8 @@
                         <el-table-column label="电价值" :formatter="formatter"></el-table-column>
                         <!-- <el-table-column label="电价id" prop="priceid"></el-table-column> -->
                         <el-table-column label="剩余电量" prop="balanceValue"></el-table-column>
-                        <el-table-column label="电表示数" prop="zybm"></el-table-column>
+                        <el-table-column label="表码" prop="zybm"></el-table-column>
+                        <el-table-column label="数据时间" :formatter="dateFormatter"></el-table-column>
                         <el-table-column label="操作" width="200">
                           <template slot-scope="scope">
                             <el-button size="mini" class="el-icon-edit" @click="openEditDevDialog(scope.row)"></el-button>
@@ -193,7 +194,7 @@
           <div class="operate">
           <div class="btns">
             <button class="el-icon-plus" @click="openAddChargeDialog"> 新增</button>
-            <button class="el-icon-upload2"> 导出</button>
+            <button class="el-icon-upload2" @click="downloadCharge"> 导出</button>
           </div>
           </div>
           <div class="table">
@@ -217,12 +218,8 @@
                 label="通讯地址">
               </el-table-column>
               <el-table-column
-                prop="version"
-                label="充电桩编号">
-              </el-table-column>
-              <el-table-column
-                prop="plugnum"
-                label="插座数量">
+                prop="installer"
+                label="安装位置">
               </el-table-column>
               <el-table-column
                 prop="longitude"
@@ -233,8 +230,12 @@
                 label="纬度">
               </el-table-column>
               <el-table-column
-                prop="installer"
-                label="安装位置">
+                prop="plugnum"
+                label="插座数量">
+              </el-table-column>
+              <el-table-column
+                prop="version"
+                label="版本">
               </el-table-column>
               <el-table-column
                 label="操作"
@@ -306,6 +307,7 @@
 </template>
 <script>
 import axios from 'axios'
+import { exportExcel } from '../../utils/exportExcel'
 export default {
   data () {
     const validateCommaddress = (rule, value, callback) => {
@@ -930,6 +932,75 @@ export default {
     },
     mapFormat(row) {
       return (row.province ? row.province : '') + (row.town ? row.town : '') + (row.region ? row.region : '')
+    },
+    dateFormatter(row) {
+      if (!row.readtime) return ''
+      let date = new Date(row.readtime)
+      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      return this.dateFormat(new Date(row.transactionsdate))
+    },
+    downloadRoom() {
+      let obj = {
+        "pageNum":"1",
+        "pageSize":"99999999",
+        "fileType":"1",
+        "list":[
+            {"property":"roomname","propertyValue":"房间名称"},
+            {"property":"accountid","propertyValue":"住户名"},
+            {"property":"disc","propertyValue":"详细地址"},
+            {"property":"province","propertyValue":"省"},
+            {"property":"town","propertyValue":"市"},
+            {"property":"region","propertyValue":"区"}
+        ]
+      }
+
+      this.$request('exportUnitList', obj, {responseType: 'blob'}).then(res => {
+        console.log(res)
+        exportExcel(res, '单位管理')
+      })
+    },
+    downloadCharge() {
+      let obj = {
+        "pageNum":"1",
+        "pageSize":"99999999",
+        "fileType":"1",
+        "list":[
+            {"property":"disc","propertyValue":"充电桩名称"},
+            {"property":"commaddress","propertyValue":"通讯地址"},
+            {"property":"installer","propertyValue":"安装地址"},
+            {"property":"dimension","propertyValue":"经度"},
+            {"property":"longitude","propertyValue":"纬度"},
+            {"property":"plugnum","propertyValue":"插座数量"},
+            {"property":"version","propertyValue":"版本"}
+        ]
+      }
+
+      this.$request('exportCharging', obj, {responseType: 'blob'}).then(res => {
+        console.log(res)
+        exportExcel(res, '充电桩设备')
+      })
+    },
+    downloadDev() {
+      let obj = {
+        "pageNum":"1",
+        "pageSize":"99999999",
+        "fileType":"1",
+        "appType":"3",
+        "roomid": this.id,
+        "list":[
+            {"property":"disc","propertyValue":"电表名称"},
+            {"property":"commaddress","propertyValue":"电表通讯地址"},
+            {"property":"priceValue","propertyValue":"电价值"},
+            {"property":"balanceValue","propertyValue":"剩余电量"},
+            {"property":"zybm","propertyValue":"表码"},
+            {"property":"readtime","propertyValue":"数据时间"}
+        ]
+      }
+
+      this.$request('exportRoomRtuList', obj, {responseType: 'blob'}).then(res => {
+        console.log('导出设备', res)
+        exportExcel(res, '房间设备')
+      })
     }
   },
   mounted() {

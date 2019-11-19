@@ -44,4 +44,22 @@ export default [
         method: 'post',
         url: http + '/service/archivesservice/WeiXinService/optRtuInfo'
     },
+    // 导出管理单位下设备集合
+    {
+        name: 'exportRoomRtuList',
+        method: 'post',
+        url: http + '/service/download/archivesservice/PropertyManageService/exportRoomRtuList'
+    },
+    // 导出充电桩设备信息
+    {
+        name: 'exportCharging',
+        method: 'post',
+        url: http + '/service/download/archivesservice/PropertyManageService/exportCharging'
+    },
+    // 导出管理单位
+    {
+        name: 'exportUnitList',
+        method: 'post',
+        url: http + '/service/download/analysisservice/PropertyIndexService/exportUnitList'
+    },
 ];

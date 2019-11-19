@@ -12,7 +12,7 @@ import {
 let httpCount = 0;
 axios.interceptors.request.use(function (config) {
     httpCount += 1;
-    const HTTP_ACCESS_TOKEN = localStorage.getItem('HTTP_ACCESS_TOKEN');
+    const HTTP_ACCESS_TOKEN = localStorage.getItem('HTTP_ACCESS_TOKEN')
     // console.log(HTTP_ACCESS_TOKEN);
     if (HTTP_ACCESS_TOKEN) {
         config.headers['HTTP_ACCESS_TOKEN'] = HTTP_ACCESS_TOKEN;
@@ -113,10 +113,10 @@ export function axiosFun(apiName, params){
  * @param params
  * @returns {*}
  */
-Vue.prototype.$request = (apiName, params) => {
+Vue.prototype.$request = (apiName, params, option) => {
     const item = getApi(apiName);
     return new Promise((resolve, reject) => {
-        axios[item['method']](item['url'], params).then(resp => {
+        axios[item['method']](item['url'], params, option).then(resp => {
             // successHandler(resp, resolve, reject);
             resolve(resp.data);
         }).catch(() => {

@@ -8,6 +8,6 @@ export default [
     {
         name: 'exprotRevenueStatistics',
         method: 'post',
-        url: http + '/service/analysisservice/PropertyIndexService/exprotRevenueStatistics'
+        url: http + '/service/download/analysisservice/PropertyIndexService/exprotRevenueStatistics'
     },
 ];

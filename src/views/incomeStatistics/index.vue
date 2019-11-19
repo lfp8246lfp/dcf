@@ -45,7 +45,7 @@
           导出
         </el-button>
 
-
+        <div class="link" ref="linkRef"></div>
         <div class="table">
           <el-table
             :data="tableData"
@@ -93,6 +93,7 @@
   </div>
 </template>
 <script>
+import { exportExcel } from '../../utils/exportExcel'
 export default {
   name: 'incomeStatistics',
   data () {
@@ -225,41 +226,30 @@ export default {
     },
 
     download() {
-      // let params = {
-      //   beginAt: this.dateFormat(this.date[0]),
-      //   endAt: this.dateFormat(this.date[1]),
-      //   type: 3,
-      //   ...this.pageParams
-      // }
-      let params = {
-        "beginAt":"2019-9-01 9:2:54",
-        "endAt":"2019-10-1 9:2:54",
+      let obj = {
+        "beginAt":this.dateFormat(this.date[0]),
+        "endAt":this.dateFormat(this.date[1]),
         "pageNum":"1",
-        "pageSize":"10",
+        "pageSize":"99999999",
         "fileType":"1",
         "replace":{
            "detailtype":{
             "2":"充电桩收益",
             "3":"wifi表收益"
            }
-          },
+        },
         "list":[
-          {"property":"chatname","propertyValue":"微信名称"},
-          {"property":"transactionsvalue","propertyValue":"金额"},
-          {"property":"detailtype","propertyValue":"流水类型"},
-          {"property":"transactionsdate","propertyValue":"时间"}
+          {"property":"transactionsdate","propertyValue":"时间"},
+          {"property":"transactionsvalue","propertyValue":"收入（元）"},
+          {"property":"detailtype","propertyValue":"收入类型"},
+          {"property":"chatname","propertyValue":"用户姓名"}
         ]
       }
 
-      this.$request('exprotRevenueStatistics', params).then(res => {
+
+      this.$request('exprotRevenueStatistics', obj, {responseType: 'blob'}).then(res => {
         console.log(res)
-        let url = window.URL.createObjectURL(new Blob([res.data.bindata]), {type: 'application/x-xls'})
-        let link = document.createElement('a')
-        link.style.display = 'none'
-        link.href = url
-        link.setAttribute('download', `WIFI电表收入统计.xls`)
-        document.body.appendChild(link)
-        link.click()
+        exportExcel(res, '收入统计')
       })
     },
   },

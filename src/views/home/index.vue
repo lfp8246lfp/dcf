@@ -290,10 +290,7 @@ export default {
             },
             tooltip: {
               show: true,
-              formatter: '{b}<br/>{a}: {c}元',
-              axisPointer: {
-                type: 'cross'
-              }
+              formatter: '{b}<br/>{a}: {c}元'
             },
             xAxis : [
                 {

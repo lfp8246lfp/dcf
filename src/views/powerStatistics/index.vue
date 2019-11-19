@@ -179,8 +179,8 @@ export default {
   data () {
     return {
       active: 'meter',
-      date1: [new Date(new Date().setMonth(new Date().getMonth() - 2)), new Date()],
-      date2: [new Date(new Date().setMonth(new Date().getMonth() - 2)), new Date()],
+      date1: [new Date(+new Date() - 7*24*60*60*1000), new Date()],
+      date2: [new Date(+new Date() - 7*24*60*60*1000), new Date()],
       pageParams1: {
         pageNum: 1,
         pageSize: 10,
