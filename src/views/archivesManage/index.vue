@@ -75,8 +75,8 @@
                 <el-form-item label="房间名称" prop="roomname">
                   <el-input v-model="form.roomname"></el-input>
                 </el-form-item>
-                <el-form-item label="住户名" prop="accountid">
-                  <el-input v-model="form.accountid"></el-input>
+                <el-form-item label="住户名" prop="householdName">
+                  <el-input v-model="form.householdName"></el-input>
                 </el-form-item>
                 <el-form-item label="选择地址" prop="region">
                       <div class="address">
@@ -339,7 +339,7 @@ export default {
         roomname: '',
         phone: '',
         disc: '',
-        accountid: '',
+        householdName: '',
         province: '',
         town: '',
         region: '',
@@ -401,7 +401,7 @@ export default {
 
       roomRules: {
         roomname: [{required:true,message:'请输入房间名称',trigger:'blur'}],
-        accountid: [{required:true,message:'请输入住户名',trigger:'blur'}],
+        householdName: [{required:true,message:'请输入住户名',trigger:'blur'}],
         region: [{required:true,message:'请选择地址',trigger:'blur'}],
         disc: [{required:true,message:'请输入详细地址',trigger:'blur'}],
       },

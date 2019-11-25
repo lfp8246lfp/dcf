@@ -98,7 +98,7 @@ export default {
   name: 'incomeStatistics',
   data () {
     return {
-      date: [new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()],
+      date: [new Date(+new Date() - 7*24*60*60*1000), new Date()],
       typeData: [0,3,2],
       type: 0,
       tableData: [],

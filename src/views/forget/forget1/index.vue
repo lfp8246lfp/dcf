@@ -61,13 +61,13 @@ export default {
             if (!valid) return
             this.$request('sendMessage', {phone: this.form.mob}).then(res => {
                 console.log('发送验证码', res)
-                if (res.data.returnCode == 0) {
-                  this.$message({
-                      type: 'success',
-                      message: res.data.returnMsg
-                  })
-                  this.authCode = res.data.authCode
-                }
+                // if (res.data.returnCode == 0) {
+                //   this.$message({
+                //       type: 'success',
+                //       message: res.data.returnMsg
+                //   })
+                //   this.authCode = res.data.authCode
+                // }
             })
           })
         },
