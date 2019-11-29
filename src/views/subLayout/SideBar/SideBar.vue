@@ -56,7 +56,7 @@ export default {
     methods: {
         getMenuList () {
             this.$request('getMenuList', {HTTP_ACCESS_TOKEN: localStorage.getItem('HTTP_ACCESS_TOKEN')}).then(res => {
-                console.log('getMenuList', res)
+                // console.log('getMenuList', res)
                 this.list = res.data.children[0].children
                 localStorage.setItem('menu', JSON.stringify(this.list))
             })
@@ -111,6 +111,9 @@ export default {
   background-color: #20252B;
   padding-top: 30px;
   box-sizing: border-box;
+}
+.el-menu {
+  border-right: 0;
 }
 .el-menu-item {
   font-size: 14px;

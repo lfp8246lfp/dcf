@@ -267,7 +267,7 @@ export default {
 
       this.$request('recentEarnings', {params: {type}}).then(res => {
         if (res.code === 200) {
-          console.log('recentEarnings', res)
+          // console.log('recentEarnings', res)
           this.recentData = {
             xAxis: res.data.monthTranctions.map(item => item.date.slice(5)),
             yAxis: res.data.monthTranctions.map(item => item.money)
@@ -351,7 +351,7 @@ export default {
 
     getHomeData() {
       this.$request('homeData').then(res => {
-        console.log('homeData', res)
+        // console.log('homeData', res)
         if (res.code === 200) {
           this.homeData = res.data
         }

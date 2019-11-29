@@ -42,12 +42,15 @@
       <div class="data">
         <div class="datePicker">
           <el-date-picker
-            v-model="date"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="border-top-right-radius:0;border-bottom-right-radius:0;">
+            v-model="date1"
+            type="date"
+            placeholder="选择开始日期">
+          </el-date-picker>
+          &nbsp;-&nbsp;
+          <el-date-picker
+            v-model="date2"
+            type="date"
+            placeholder="选择结束日期">
           </el-date-picker>
           <el-button type="primary" icon="el-icon-search" @click="getWithdrawDetail"></el-button>
         </div>
@@ -162,7 +165,8 @@ export default {
         withdrawalBalance: 0,
       },
       tableData: [],
-      date: [new Date(new Date().setMonth(new Date().getMonth() - 1)), new Date()],
+      date1: new Date(new Date().setMonth(new Date().getMonth() - 1)),
+      date2: new Date(),
       pageParams: {
         pageNum: 1,
         pageSize: 10
@@ -188,12 +192,12 @@ export default {
   methods:{
     getWithdrawDetail() {
       let params = {
-        beginAt: this.dateFormat(this.date[0]),
-        endAt: this.dateFormat(this.date[1]),
+        beginAt: this.dateFormat(this.date1),
+        endAt: this.dateFormat(this.date2),
         ...this.pageParams
       }
       this.$request('withdrawDetail', {params}).then(res => {
-        console.log('提现数据', res)
+        // console.log('提现数据', res)
         if (res.code === 200) {
           this.withdrawData.totalMoney = res.data.totalMoney
           this.withdrawData.cumbBalanceAmount = res.data.cumbBalanceAmount
@@ -217,7 +221,7 @@ export default {
         }).then(() => {
             if (!valid) return
             this.$request('addWithdrawLog', this.form).then(res => {
-              console.log('提现申请', res)
+              // console.log('提现申请', res)
               if (res.data.returnCode === 1) {
                 this.$message({
                   type: 'success',
@@ -251,7 +255,7 @@ export default {
     },
 
     dateFormat(date) {
-      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      return date.getFullYear() + '-' + (date.getMonth() + 1 + '') + '-' + date.getDate() + '' + ' ' + (date.getHours() + '').padStart(2, '0') + ':' + (date.getMinutes() + '').padStart(2, '0') + ':' + (date.getSeconds() + '').padStart(2, '0')
     },
     formatter(row) {
       return this.dateFormat(new Date(row.withdrawdate))
@@ -368,6 +372,7 @@ export default {
     .datePicker {
       display: flex;
       margin-left: 20px;
+      line-height: 40px;
       .el-button {
         width:40px;
         height:40px;

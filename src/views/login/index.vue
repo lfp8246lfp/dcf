@@ -65,7 +65,7 @@ export default {
                 if (valid) {
                   this.loading = true
                   this.$request('login', this.form).then(res => {
-                      console.log('登录', res)
+                      // console.log('登录', res)
                       if (res.data.success == "1") {
                           localStorage.setItem('HTTP_ACCESS_TOKEN', res.data.HTTP_ACCESS_TOKEN)
                           localStorage.setItem('accountid', this.form.accountid)

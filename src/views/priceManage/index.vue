@@ -172,7 +172,7 @@ export default {
 
     getElectricityPrice() {
       this.$request('electricityPrice', {params: this.PageParams}).then(res => {
-        console.log('电表电价数据', res)
+        // console.log('电表电价数据', res)
         if (res.data.returncode === 1) {
           this.tableData = res.data.items
           this.total = res.data.total
@@ -208,7 +208,7 @@ export default {
               ...this.form
             }
               this.$request('optWifiPrice', obj).then(res => {
-                console.log('新建电价', res)
+                // console.log('新建电价', res)
                 if (res.data.returncode === 1) {
                   this.dialogFormVisible = false
                   this.getElectricityPrice()
@@ -248,7 +248,7 @@ export default {
               ...this.form
             }
             this.$request('optWifiPrice', obj).then(res => {
-              console.log('修改电价', res)
+              // console.log('修改电价', res)
               if (res.data.returncode === 1) {
                 this.dialogFormVisible = false
                 this.getElectricityPrice()
@@ -290,7 +290,7 @@ export default {
         }
 
         this.$request('optWifiPrice', obj).then(res => {
-          console.log('删除电价', res)
+          // console.log('删除电价', res)
           if (res.data.returncode === 1) {
             this.getElectricityPrice()
             this.$message({
@@ -319,7 +319,7 @@ export default {
 
     getCharingPrice() {
       this.$request('electricityPrice', {params: {appType: 1}}).then(res => {
-        console.log('充电桩电价数据', res)
+        // console.log('充电桩电价数据', res)
         if (res.data.returncode === 1 && res.data.items.length > 0) {
           this.chargePrices = res.data.items
         }
@@ -339,7 +339,7 @@ export default {
               item: this.chargePrices.map(item => ({hour: item.hour, price: item.price}))
             }
             this.$request('optCharingPrice', obj).then(res => {
-              console.log('新增充电桩电价', res)
+              // console.log('新增充电桩电价', res)
               if (res.data.returncode === 1) {
                 this.$message.success('新增成功')
                 this.getCharingPrice()
@@ -366,7 +366,7 @@ export default {
             item: this.chargePrices
           }
           this.$request('optCharingPrice', obj).then(res => {
-            console.log('修改充电桩电价', res)
+            // console.log('修改充电桩电价', res)
             if (res.data.returncode === 1) {
               this.$message.success('修改成功')
               this.getCharingPrice()
@@ -393,7 +393,7 @@ export default {
       if (!isInput) {
         this.$message.error('请输入完整的时长和价格')
         return false
-      } else if (!isNum) {
+      } else if (isNum) {
         this.$message.error('请输入数字')
         return false
       } else {
@@ -411,7 +411,7 @@ export default {
             item: this.chargePrices
           }
           this.$request('optCharingPrice', obj).then(res => {
-            console.log('删除充电桩电价', res)
+            // console.log('删除充电桩电价', res)
             if (res.data.returncode === 1) {
               this.$message.success('删除成功')
               this.chargePrices = this.chargePrices.map(item => ({hour: '', price: ''}))

@@ -6,12 +6,15 @@
             <h3 class="title">时间范围</h3>
             <div class="datePicker">
               <el-date-picker
-                v-model="date"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                style="border-top-right-radius:0;border-bottom-right-radius:0;">
+                v-model="date1"
+                type="date"
+                placeholder="选择开始日期">
+              </el-date-picker>
+              &nbsp;-&nbsp;
+              <el-date-picker
+                v-model="date2"
+                type="date"
+                placeholder="选择结束日期">
               </el-date-picker>
               <el-button type="primary" icon="el-icon-search" @click="getRevenue()"></el-button>
             </div>
@@ -98,7 +101,8 @@ export default {
   name: 'incomeStatistics',
   data () {
     return {
-      date: [new Date(+new Date() - 7*24*60*60*1000), new Date()],
+      date1: new Date(+new Date() - 7*24*60*60*1000),
+      date2: new Date(),
       typeData: [0,3,2],
       type: 0,
       tableData: [],
@@ -145,10 +149,11 @@ export default {
   methods:{
     dateShortcut(time) {
       // console.log(time)
+      this.date2 = new Date()
       if (time) {
-        this.date = [new Date(new Date().setMonth(new Date().getMonth() - time)), new Date()]
+        this.date1 = new Date(new Date().setMonth(new Date().getMonth() - time))
       } else {
-        this.date = [new Date(+new Date() - 7*24*60*60*1000), new Date()]
+        this.date1 = new Date(+new Date() - 7*24*60*60*1000)
       }
       // console.log(this.date)
       this.getRevenue()
@@ -170,14 +175,14 @@ export default {
     getRevenue(t = this.type) {
       let type = t === 0 ? null : t
       let params = {
-        beginAt: this.dateFormat(this.date[0]),
-        endAt: this.dateFormat(this.date[1]),
+        beginAt: this.dateFormat(this.date1),
+        endAt: this.dateFormat(this.date2),
         type,
         ...this.pageParams
       }
       // console.log('收益统计参数', params)
       this.$request('revenueStatistics', {params}).then(res => {
-        console.log('收益统计数据:', res)
+        // console.log('收益统计数据:', res)
         if (res.code === 200) {
           this.tableData = res.data.items
           this.total = res.data.total
@@ -187,7 +192,7 @@ export default {
     },
 
     dateFormat(date) {
-      return '' + date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      return date.getFullYear() + '-' + (date.getMonth() + 1 + '') + '-' + date.getDate() + '' + ' ' + (date.getHours() + '').padStart(2, '0') + ':' + (date.getMinutes() + '').padStart(2, '0') + ':' + (date.getSeconds() + '').padStart(2, '0')
     },
 
     formatter(row) {
@@ -227,8 +232,8 @@ export default {
 
     download() {
       let obj = {
-        "beginAt":this.dateFormat(this.date[0]),
-        "endAt":this.dateFormat(this.date[1]),
+        "beginAt":this.dateFormat(this.date1),
+        "endAt":this.dateFormat(this.date2),
         "pageNum":"1",
         "pageSize":"99999999",
         "fileType":"1",
@@ -248,7 +253,7 @@ export default {
 
 
       this.$request('exprotRevenueStatistics', obj, {responseType: 'blob'}).then(res => {
-        console.log(res)
+        // console.log(res)
         exportExcel(res, '收入统计')
       })
     },
@@ -277,6 +282,7 @@ export default {
         margin-bottom: 50px;
         .datePicker {
           display: flex;
+          line-height: 40px;
           .el-button {
             width:40px;
             height:40px;

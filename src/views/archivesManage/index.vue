@@ -418,7 +418,7 @@ export default {
     // 获取房间列表
     getRoomList() {
       this.$request('getUnitList', {params: this.listParams}).then(res => {
-        console.log('单位列表数据', res)
+        // console.log('单位列表数据', res)
         if (res.code === 200) {
           this.tableData = res.data.items
           this.roomTotal = res.data.total
@@ -534,7 +534,7 @@ export default {
             ...this.form
           }
           this.$request('optUnit', obj).then(res => {
-            console.log('新增房间', res)
+            // console.log('新增房间', res)
             if (res.data.returnCode === 1) {
               this.$message({
                 type: 'success',
@@ -572,7 +572,7 @@ export default {
             ...this.form
           }
           this.$request('optUnit', obj).then(res => {
-            console.log('修改房间', res)
+            // console.log('修改房间', res)
             if (res.data.returnCode === 1) {
               this.$message({
                 type: 'success',
@@ -615,7 +615,7 @@ export default {
         }).then(() => {
           
           this.$request('optUnit', obj).then(res => {
-            console.log('删除房间', res)
+            // console.log('删除房间', res)
             if (res.data.returnCode === 1) {
               this.$message({
                 type: 'success',
@@ -646,7 +646,7 @@ export default {
       }
       this.id = id
       this.$request('getRoomRtuList',{params}).then(res => {
-        console.log('房间设备数据', res.data)
+        // console.log('房间设备数据', res.data)
         this.roomDevData = res.data.items
         this.devTotal = res.data.total
       })
@@ -662,7 +662,7 @@ export default {
     // 打开新增设备的对话框
     openAddDevDialog() {
       this.$request('getSinglePriceList').then(res => {
-        console.log('电价', res)
+        // console.log('电价', res)
         if (res.data.returncode === 1) {
           this.prices = res.data.items
         }
@@ -673,7 +673,7 @@ export default {
     // 打开修改设备的对话框
     openEditDevDialog(row) {
       this.$request('getSinglePriceList').then(res => {
-        console.log('电价', res)
+        // console.log('电价', res)
         if (res.data.returncode === 1) {
           this.prices = res.data.items
         }
@@ -717,7 +717,7 @@ export default {
           type: 'warning'
         }).then(() => {
             this.$request('addDevInfo', {id: this.id, ...this.devForm}).then(res => {
-              console.log('新增修改设备', res)
+              // console.log('新增修改设备', res)
               if (res.data.returncode === 1) {
                 this.$message({
                   type: 'success',
@@ -749,7 +749,7 @@ export default {
           type: 'warning'
       }).then(() => {
         this.$request('deleteDevInfo', {rtuid}).then(res => {
-          console.log('删除设备', res)
+          // console.log('删除设备', res)
           if (res.data.returncode === 1) {
             this.$message({
               type: 'success',
@@ -774,7 +774,7 @@ export default {
     // 获取充电桩数据
     getChargeData() {
       this.$request('queryCharging', {commaddress: '', ...this.chargePageParams}).then(res => {
-        console.log('充电桩数据', res)
+        // console.log('充电桩数据', res)
         if (res.data.returncode === 1) {
           this.tableData1 = res.data.items
           this.chargeTotal = res.data.total
@@ -829,7 +829,7 @@ export default {
             }
           }
           this.$request('optRtuInfo', {...obj}).then(res => {
-            console.log('新增修改充电桩', res)
+            // console.log('新增修改充电桩', res)
             if (res.data.returnResult === 1) {
               this.chargeDialogVisible = false
               this.getChargeData()
@@ -871,7 +871,7 @@ export default {
             }
           }
           this.$request('optRtuInfo', {...obj}).then(res => {
-            console.log('新增修改充电桩', res)
+            // console.log('新增修改充电桩', res)
             if (res.data.returnResult === 1) {
               this.$message.success('修改成功')
               this.chargeDialogVisible = false
@@ -895,7 +895,7 @@ export default {
           type: 'warning'
       }).then(() => {
           this.$request('optRtuInfo', {optType: 3, obj: row}).then(res => {
-            console.log('删除充电桩', res)
+            // console.log('删除充电桩', res)
             if (res.data.returnResult === 1) {
               this.getChargeData()
               this.$message.success('删除成功')
@@ -936,7 +936,7 @@ export default {
     dateFormatter(row) {
       if (!row.readtime) return ''
       let date = new Date(row.readtime)
-      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      return date.getFullYear() + '-' + (date.getMonth() + 1 + '') + '-' + date.getDate() + '' + ' ' + (date.getHours() + '').padStart(2, '0') + ':' + (date.getMinutes() + '').padStart(2, '0') + ':' + (date.getSeconds() + '').padStart(2, '0')
       return this.dateFormat(new Date(row.transactionsdate))
     },
     downloadRoom() {
@@ -955,7 +955,7 @@ export default {
       }
 
       this.$request('exportUnitList', obj, {responseType: 'blob'}).then(res => {
-        console.log(res)
+        // console.log(res)
         exportExcel(res, '单位管理')
       })
     },
@@ -976,7 +976,7 @@ export default {
       }
 
       this.$request('exportCharging', obj, {responseType: 'blob'}).then(res => {
-        console.log(res)
+        // console.log(res)
         exportExcel(res, '充电桩设备')
       })
     },
@@ -998,7 +998,7 @@ export default {
       }
 
       this.$request('exportRoomRtuList', obj, {responseType: 'blob'}).then(res => {
-        console.log('导出设备', res)
+        // console.log('导出设备', res)
         exportExcel(res, '房间设备')
       })
     }

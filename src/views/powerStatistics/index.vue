@@ -8,11 +8,15 @@
           <div class="operate">
             <div class="datePicker">
               <el-date-picker
+                v-model="date1"
+                type="date"
+                placeholder="选择开始日期">
+              </el-date-picker>
+              &nbsp;-&nbsp;
+              <el-date-picker
                 v-model="date2"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期">
+                type="date"
+                placeholder="选择结束日期">
               </el-date-picker>
               <!-- <el-button type="primary" icon="el-icon-search" @click="getMeterHistoryData"></el-button> -->
             </div>
@@ -88,11 +92,15 @@
           <div class="operate">
             <div class="datePicker">
               <el-date-picker
-                v-model="date1"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期">
+                v-model="date3"
+                type="date"
+                placeholder="选择开始日期">
+              </el-date-picker>
+              &nbsp;-&nbsp;
+              <el-date-picker
+                v-model="date4"
+                type="date"
+                placeholder="选择结束日期">
               </el-date-picker>
               <!-- <el-button type="primary" icon="el-icon-search" @click="getChargeHistoryData"></el-button> -->
             </div>
@@ -179,8 +187,10 @@ export default {
   data () {
     return {
       active: 'meter',
-      date1: [new Date(+new Date() - 7*24*60*60*1000), new Date()],
-      date2: [new Date(+new Date() - 7*24*60*60*1000), new Date()],
+      date1: new Date(+new Date() - 7*24*60*60*1000),
+      date2: new Date(),
+      date3: new Date(+new Date() - 7*24*60*60*1000),
+      date4: new Date(),
       pageParams1: {
         pageNum: 1,
         pageSize: 10,
@@ -223,12 +233,12 @@ export default {
       let params = {
         appType: 1,
         commaddress,
-        beginAt: this.dateFormat(this.date1[0]),
-        endAt: this.dateFormat(this.date1[1]),
+        beginAt: this.dateFormat(this.date3),
+        endAt: this.dateFormat(this.date4),
         ...this.pageParams1
       }
       this.$request('queryHistory', {params}).then(res => {
-        console.log('充电桩历史数据',res)
+        // console.log('充电桩历史数据',res)
         this.waterMeterTableData = res.data.items
         this.total1 = res.data.total
       })
@@ -242,19 +252,19 @@ export default {
       let params = {
         appType: 3,
         commaddress,
-        beginAt: this.dateFormat(this.date2[0]),
-        endAt: this.dateFormat(this.date2[1]),
+        beginAt: this.dateFormat(this.date1),
+        endAt: this.dateFormat(this.date2),
         ...this.pageParams2
       }
       this.$request('queryHistory', {params}).then(res => {
-        console.log('wifi表历史数据',res)
+        // console.log('wifi表历史数据',res)
         this.meterTableData = res.data.items
         this.total2 = res.data.total
       })
     },
 
     dateFormat(date) {
-      return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+      return date.getFullYear() + '-' + (date.getMonth() + 1 + '') + '-' + date.getDate() + '' + ' ' + (date.getHours() + '').padStart(2, '0') + ':' + (date.getMinutes() + '').padStart(2, '0') + ':' + (date.getSeconds() + '').padStart(2, '0')
     },
     dateFormatter1(row) {
       return this.dateFormat(new Date(row.readtime))
@@ -292,6 +302,7 @@ export default {
           display: flex;
           float: left;
           margin-left: 20px;
+          line-height: 40px;
           .el-button {
             width:40px;
             height:40px;

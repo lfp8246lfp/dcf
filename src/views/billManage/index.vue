@@ -60,7 +60,7 @@ export default {
       let billMonth = this.monthFormat(this.month)
       // let billMonth = this.month.getFullYear() + '-' + (this.month.getMonth() + 1)
       this.$request('billManage',{params: {billMonth}}).then(res => {
-        console.log(res)
+        // console.log(res)
         this.income = res.data.items
         this.total = res.data.totalMoney
       }).then(res => {

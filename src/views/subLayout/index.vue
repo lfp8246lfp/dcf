@@ -152,7 +152,7 @@ export default {
                 this.$refs.formRef.validate(valid => {
                   if (!valid) return
                   this.$request('updatePassword', {oldpassword: this.form.pwdOld, newpassword: this.form.pwdNew}).then(res => {
-                    console.log('修改密码', res)
+                    // console.log('修改密码', res)
                     if (res.data.returnCode === 1) {
                       this.$message.success(res.data.returnMsg)
                       this.dialogVisible = false
@@ -286,7 +286,7 @@ export default {
 .el-main {
   background-color: #f2f4fa;
   color: #333;
-  padding: 0;
+  padding: 0!important;
   .Copyright {
     width: 100%;
     text-align: center;

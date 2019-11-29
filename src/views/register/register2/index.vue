@@ -61,7 +61,7 @@ export default {
               }
               this.$request('register', obj).then(res => {
                 if (res.data.returnCode === 1) {
-                  console.log(res)
+                  // console.log(res)
                   this.$message({
                       type: 'success',
                       message: res.data.returnMsg
